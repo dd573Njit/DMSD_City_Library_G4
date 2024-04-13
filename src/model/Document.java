@@ -1,17 +1,17 @@
 package model;
 
 public class Document {
-    private int id;
+    private String id;
     private String title;
     private String publisher;
 
-    public Document(int id, String title, String publisher) {
+    public Document(String id, String title, String publisher) {
         this.id = id;
         this.title = title;
         this.publisher = publisher;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -23,7 +23,7 @@ public class Document {
         return publisher;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
