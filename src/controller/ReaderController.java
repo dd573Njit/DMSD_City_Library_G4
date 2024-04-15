@@ -5,8 +5,8 @@ import util.SessionManager;
 import view.ReaderView;
 
 public class ReaderController {
-    private ReaderView readerView;
-    private DocumentDAO documentDAO;
+    private final ReaderView readerView;
+    private final DocumentDAO documentDAO;
 
     public ReaderController() {
         readerView = new ReaderView();

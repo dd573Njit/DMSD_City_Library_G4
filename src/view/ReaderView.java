@@ -10,7 +10,6 @@ public class ReaderView extends JFrame {
     private JButton btnListDocument;
     private JButton btnLogout;
     private JButton btnSearch; // Search button
-    private JPanel dynamicPanel;
     private JList<String> documentList; // To display document details or search results
     private JLabel searchLabel;
 
@@ -63,7 +62,7 @@ public class ReaderView extends JFrame {
         add(northPanel, BorderLayout.NORTH);
 
         // Dynamic panel for displaying document details
-        dynamicPanel = new JPanel(new BorderLayout());
+        JPanel dynamicPanel = new JPanel(new BorderLayout());
         documentList = new JList<>();
         dynamicPanel.add(new JScrollPane(documentList), BorderLayout.CENTER);
         add(dynamicPanel, BorderLayout.CENTER);
