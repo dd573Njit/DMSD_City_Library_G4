@@ -29,6 +29,10 @@ public class AdminView extends JFrame {
     private JButton btnAddCurrentReader;
     private JPanel readerPanel;
 
+    //Branch info panel
+    private JList<String> branchList;
+    private JPanel dynamicBranchPanel;
+
     JPanel cardPanel;
 
     public AdminView() {
@@ -43,8 +47,7 @@ public class AdminView extends JFrame {
         addTopPanel();
         setupDocumentPanel();
         setupReaderPanel();
-        documentPanel.setVisible(false);
-        readerPanel.setVisible(false);
+        setUpBranchPanel();
         setupPanelsWithCardLayout();
     }
 
@@ -121,6 +124,13 @@ public class AdminView extends JFrame {
         add(readerPanel, BorderLayout.CENTER);
     }
 
+    private void setUpBranchPanel() {
+        branchList = new JList<>();
+        dynamicBranchPanel = new JPanel(new BorderLayout());
+        dynamicBranchPanel.add(new JScrollPane(branchList), BorderLayout.CENTER);
+        add(dynamicBranchPanel, BorderLayout.CENTER);
+    }
+
     private void addLabelAndField(JPanel panel, String labelText, JTextField textField, int gridy, GridBagConstraints gbc) {
         JLabel label = new JLabel(labelText);
         gbc.gridx = 0;
@@ -135,6 +145,7 @@ public class AdminView extends JFrame {
         cardPanel = new JPanel(new CardLayout());  // This holds the panels like cards
         cardPanel.add(readerPanel, "Reader Panel");
         cardPanel.add(documentPanel, "Document Panel");
+        cardPanel.add(dynamicBranchPanel, "Branch Panel");
 
         // Add the card panel to the frame
         add(cardPanel, BorderLayout.CENTER);
@@ -228,5 +239,9 @@ public class AdminView extends JFrame {
             return false;
         }
         return true;
+    }
+
+    public void dsiplayBranchInfo(String[] branches) {
+        branchList.setListData(branches);
     }
 }

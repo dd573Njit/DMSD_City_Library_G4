@@ -1,8 +1,10 @@
 package controller;
 
+import dao.BranchDAO;
 import dao.DocumentDAO;
 import dao.PublisherDAO;
 import dao.ReaderDAO;
+import model.Branch;
 import model.Document;
 import model.Publisher;
 import model.Reader;
@@ -10,7 +12,9 @@ import util.SessionManager;
 import view.AdminView;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AdminController {
     private final AdminView adminView;
@@ -27,6 +31,7 @@ public class AdminController {
         adminView.getBtnLogout().addActionListener(e -> logoutHandler());
         adminView.getBtnAddDoc().addActionListener(e -> adminView.showPanel("Document Panel"));
         adminView.getBtnAddReader().addActionListener(e -> adminView.showPanel("Reader Panel"));
+        adminView.getBtnBranchInfo().addActionListener(e -> showBranchInfo());
         adminView.getBtnAddCurrentDoc().addActionListener(e -> {
             if(adminView.areAllDocFieldsFilled()) {
                 try {
@@ -79,5 +84,16 @@ public class AdminController {
         Reader reader = new Reader(rId,rName,rType,rAddress,rPhone);
         ReaderDAO readerDAO = new ReaderDAO();
         readerDAO.addReader(reader);
+    }
+
+    private void showBranchInfo() {
+        BranchDAO branchDAO = new BranchDAO();
+        List<String> branches = new ArrayList<>();
+        branches.add(String.format("%-20s %s", "Branch Name", "Branch Location"));
+        for(Branch branch : branchDAO.getAllBranches()) {
+            branches.add(String.format("%-25s %s",branch.getLName(),branch.getLocation()));
+        }
+        adminView.showPanel("Branch Panel");
+        adminView.dsiplayBranchInfo(branches.toArray(new String[0]));
     }
 }
