@@ -1,4 +1,6 @@
 package popup;
+import util.SessionManager;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,12 +18,16 @@ public class AdminLoginPopup {
         if (result == JOptionPane.OK_OPTION) {
             String adminId = txtAdminId.getText();
             String password = new String(txtPassword.getPassword());
-            // Placeholder for validation logic
+
             if (adminId.trim().isEmpty() || password.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(parentFrame, "Admin ID and password cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                // Authenticate and then:
+            } else if(adminId.equals("admin") && password.equals("secret")) {
+                SessionManager.getInstance().setAdminId(adminId);
+                SessionManager.getInstance().setAdminPassword(password);
                 onLoginSuccess.run();
+            }
+            else {
+                JOptionPane.showMessageDialog(parentFrame, "Admin ID and password does not match", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
