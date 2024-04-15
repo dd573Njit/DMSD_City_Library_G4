@@ -1,6 +1,7 @@
 package popup;
 
 import dao.ReaderDAO;
+import util.SessionManager;
 
 import javax.swing.*;
 
@@ -17,6 +18,7 @@ public class ReaderLoginPopup {
             if (cardNumber.isEmpty()) {
                 JOptionPane.showMessageDialog(parentFrame, "Card number cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (readerDAO.isValidReader(cardNumber)) {
+                SessionManager.getInstance().setCurrentReaderCardNumber(cardNumber);
                 onLoginSuccess.run();
             } else {
                 JOptionPane.showMessageDialog(parentFrame, "Invalid card number. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
