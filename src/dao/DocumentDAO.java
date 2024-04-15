@@ -15,7 +15,7 @@ public class DocumentDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                documents.add(new Document(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("PDATE")));
+                documents.add(new Document(rs.getString("DOCID"), rs.getString("TITLE"), rs.getDate("PDATE"), rs.getString("PUBLISHERID")));
             }
         } catch (SQLException e) {
             System.err.println("Error accessing database: " + e.getMessage());
