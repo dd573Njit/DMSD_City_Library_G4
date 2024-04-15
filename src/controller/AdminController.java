@@ -16,6 +16,8 @@ public class AdminController {
 
     private void attachHandlers() {
         adminView.getBtnLogout().addActionListener(e -> logoutHandler());
+        adminView.getBtnAddDoc().addActionListener(e -> adminView.showPanel("Document Panel"));
+        adminView.getBtnAddReader().addActionListener(e -> adminView.showPanel("Reader Panel"));
     }
 
     private void logoutHandler() {

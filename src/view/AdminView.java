@@ -4,11 +4,32 @@ import java.awt.*;
 import javax.swing.*;
 
 public class AdminView extends JFrame {
+    //Top panel
     private JButton btnAddReader;
     private JButton btnAddDoc;
     private JButton btnSearchDoc;
     private JButton btnBranchInfo;
     private JButton btnLogout;
+
+    //Document panel
+    private JButton btnAddCurrentDoc;
+    private JTextField txtPubId;
+    private JTextField txtPubName;
+    private JTextField txtPubAddress;
+    private JTextField txtDocId;
+    private JTextField txtDocTitle;
+    private JPanel documentPanel;
+
+    //Reader panel
+    private JTextField txtRId;
+    private JTextField txtRName;
+    private JTextField txtRAddress;
+    private JTextField txtRPhone;
+    private JTextField txtRType;
+    private JButton btnAddCurrentReader;
+    private JPanel readerPanel;
+
+    JPanel cardPanel;
 
     public AdminView() {
         initializeUI();
@@ -19,6 +40,15 @@ public class AdminView extends JFrame {
         setSize(800, 400);
         setLayout(new BorderLayout());
 
+        addTopPanel();
+        setupDocumentPanel();
+        setupReaderPanel();
+        documentPanel.setVisible(false);
+        readerPanel.setVisible(false);
+        setupPanelsWithCardLayout();
+    }
+
+    private void addTopPanel() {
         JPanel topPanel = new JPanel(new FlowLayout());
         btnAddReader = new JButton("Add Reader");
         btnAddDoc = new JButton("Add Document");
@@ -35,6 +65,70 @@ public class AdminView extends JFrame {
         northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.PAGE_AXIS));
         northPanel.add(topPanel);
         add(northPanel, BorderLayout.NORTH);
+    }
+
+    private void setupDocumentPanel() {
+        documentPanel = new JPanel();
+        documentPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.insets = new Insets(2, 2, 2, 2); // Smaller gaps between components
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        txtPubId = new JTextField(5);
+        txtDocId = new JTextField(5);
+        txtDocTitle = new JTextField(5);
+        txtPubName = new JTextField(5);
+        txtPubAddress = new JTextField(5);
+
+        addLabelAndField(documentPanel, "Publisher ID:", txtPubId, 0, gbc);
+        addLabelAndField(documentPanel, "Publisher Name:", txtPubName, 1, gbc);
+        addLabelAndField(documentPanel, "Address:", txtPubAddress, 2, gbc);
+        addLabelAndField(documentPanel, "Doc ID:", txtDocId, 3, gbc);
+        addLabelAndField(documentPanel, "Doc Title:", txtDocTitle, 4, gbc);
+        btnAddCurrentDoc = new JButton("Add Current Document");
+        documentPanel.add(btnAddCurrentDoc);
+
+        add(documentPanel, BorderLayout.CENTER);
+    }
+
+    private void setupReaderPanel() {
+        readerPanel = new JPanel();
+        readerPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.insets = new Insets(2, 2, 2, 2); // Smaller gaps between components
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        txtRId = new JTextField(5);
+        txtRAddress = new JTextField(5);
+        txtRName = new JTextField(5);
+        txtRPhone = new JTextField(5);
+        txtRType = new JTextField(5);
+
+        addLabelAndField(readerPanel, "Reader ID:", txtRId, 0, gbc);
+        addLabelAndField(readerPanel, "Reader Name:", txtRName, 1, gbc);
+        addLabelAndField(readerPanel, "Reader Address:", txtRAddress, 2, gbc);
+        addLabelAndField(readerPanel, "Reader Phone:", txtRPhone, 3, gbc);
+        addLabelAndField(readerPanel, "Reader Type:", txtRType, 4, gbc);
+        btnAddCurrentReader = new JButton("Add Current Reader");
+        readerPanel.add(btnAddCurrentReader);
+
+        add(readerPanel, BorderLayout.CENTER);
+    }
+
+    private void addLabelAndField(JPanel panel, String labelText, JTextField textField, int gridy, GridBagConstraints gbc) {
+        JLabel label = new JLabel(labelText);
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        panel.add(label, gbc);
+
+        gbc.gridx = 1;
+        panel.add(textField, gbc);
     }
 
     public JButton getBtnAddReader() {
@@ -55,5 +149,68 @@ public class AdminView extends JFrame {
 
     public JButton getBtnLogout() {
         return btnLogout;
+    }
+
+    public JButton getBtnAddCurrentDoc() {
+        return btnAddCurrentDoc;
+    }
+
+    public JTextField getTxtPubId() {
+        return txtPubId;
+    }
+
+    public JTextField getTxtPubName() {
+        return txtPubName;
+    }
+
+    public JTextField getTxtPubAddress() {
+        return txtPubAddress;
+    }
+
+    public JTextField getTxtDocId() {
+        return txtDocId;
+    }
+
+    public JTextField getTxtDocTitle() {
+        return txtDocTitle;
+    }
+
+    public JTextField getTxtRId() {
+        return txtRId;
+    }
+
+    public JTextField getTxtRName() {
+        return txtRName;
+    }
+
+    public JTextField getTxtRAddress() {
+        return txtRAddress;
+    }
+
+    public JTextField getTxtRPhone() {
+        return txtRPhone;
+    }
+
+    public JTextField getTxtRType() {
+        return txtRType;
+    }
+
+    public JButton getBtnAddCurrentReader() {
+        return btnAddCurrentReader;
+    }
+
+    private void setupPanelsWithCardLayout() {
+        cardPanel = new JPanel(new CardLayout());  // This holds the panels like cards
+        cardPanel.add(documentPanel, "Document Panel");
+        cardPanel.add(readerPanel, "Reader Panel");
+
+        // Add the card panel to the frame
+        add(cardPanel, BorderLayout.CENTER);
+    }
+
+    // Method in controller or somewhere to switch panels
+    public void showPanel(String cardName) {
+        CardLayout cl = (CardLayout)(cardPanel.getLayout());
+        cl.show(cardPanel, cardName);  // Switches to the given card by name
     }
 }
