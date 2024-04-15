@@ -7,6 +7,8 @@ public class ReaderView extends JFrame {
     private JButton btnReserveDocument;
     private JButton btnReturnDocument;
     private JButton btnCheckoutDocument;
+    private JButton btnListDocument;
+    private JButton btnLogout;
     private JButton btnSearch; // Search button
     private JPanel dynamicPanel;
     private JList<String> documentList; // To display document details or search results
@@ -18,7 +20,7 @@ public class ReaderView extends JFrame {
 
     private void initializeUI() {
         setTitle("Reader Functions");
-        setSize(600, 400);
+        setSize(800, 400);
         setLayout(new BorderLayout());
 
         // Top panel with action buttons
@@ -26,10 +28,14 @@ public class ReaderView extends JFrame {
         btnReserveDocument = new JButton("Reserve Document");
         btnReturnDocument = new JButton("Return Document");
         btnCheckoutDocument = new JButton("Checkout Document");
+        btnListDocument = new JButton("List Document");
+        btnLogout = new JButton("Logout");
 
         topPanel.add(btnReserveDocument);
         topPanel.add(btnReturnDocument);
         topPanel.add(btnCheckoutDocument);
+        topPanel.add(btnListDocument);
+        topPanel.add(btnLogout);
 
         // Search panel setup
         JPanel searchPanel = new JPanel();
@@ -82,6 +88,14 @@ public class ReaderView extends JFrame {
 
     public JButton getBtnCheckoutDocument() {
         return btnCheckoutDocument;
+    }
+
+    public JButton getBtnListDocument() {
+        return btnListDocument;
+    }
+
+    public JButton getBtnLogout() {
+        return btnLogout;
     }
 
     public JButton getBtnSearch() {

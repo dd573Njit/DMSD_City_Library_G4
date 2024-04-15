@@ -3,6 +3,7 @@ package controller;
 import dao.ReaderDAO;
 import popup.AdminLoginPopup;
 import popup.ReaderLoginPopup;
+import util.SessionManager;
 import view.MainView;
 
 public class MainController {
@@ -21,8 +22,15 @@ public class MainController {
     }
 
     private void setupHandlers() {
-        mainView.getBtnReaderFunctions().addActionListener(e -> ReaderLoginPopup.showLogin(mainView, this::openReaderFunctions, readerDAO));
+        mainView.getBtnReaderFunctions().addActionListener(e -> {
+            if (SessionManager.getInstance().getCurrentReaderCardNumber() != null) {
+                openReaderFunctions();
+            } else {
+                ReaderLoginPopup.showLogin(mainView, this::openReaderFunctions, readerDAO);
+            }
+        });
         mainView.getBtnAdminFunctions().addActionListener(e -> AdminLoginPopup.showLogin(mainView, this::openAdminFunctions));
+        mainView.getBtnQuit().addActionListener(e -> System.exit(0));
     }
 
     private void openReaderFunctions() {

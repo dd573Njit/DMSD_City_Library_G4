@@ -1,6 +1,7 @@
 package dao;
 import model.Document;
 import util.DatabaseConnection;
+import util.SessionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -45,12 +46,12 @@ public class DocumentDAO {
         return results;
     }
 
-    public List<String> getReturnableDocuments(String readerId) {
+    public List<String> getReturnableDocuments() {
         List<String> documents = new ArrayList<>();
         String sql = "select TITLE from DOCUMENTS d JOIN BORROWS b on d.DOCID = b.DOCID where b.RID = ?;";  // Adjust the SQL based on your schema
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, readerId);
+            pstmt.setString(1, SessionManager.getInstance().getCurrentReaderCardNumber());
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     documents.add(rs.getString("title"));  // Assuming titles are being displayed

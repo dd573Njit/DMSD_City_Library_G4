@@ -24,8 +24,6 @@ public class MainView extends JFrame {
         add(btnReaderFunctions);
         add(btnAdminFunctions);
         add(btnQuit);
-
-        btnQuit.addActionListener(e -> System.exit(0));
     }
 
     public JButton getBtnReaderFunctions() {
@@ -34,5 +32,9 @@ public class MainView extends JFrame {
 
     public JButton getBtnAdminFunctions() {
         return btnAdminFunctions;
+    }
+
+    public JButton getBtnQuit() {
+        return btnQuit;
     }
 }
