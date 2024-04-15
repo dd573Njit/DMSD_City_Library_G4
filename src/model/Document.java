@@ -1,38 +1,50 @@
 package model;
 
-public class Document {
-    private String id;
-    private String title;
-    private String publisher;
+import java.util.Date;
 
-    public Document(String id, String title, String publisher) {
-        this.id = id;
+public class Document {
+    private String docId;
+    private String title;
+    private Date pDate;
+    private String publisherId;
+
+    public Document(String docId, String title, Date pDate, String publisherId) {
+        this.docId = docId;
         this.title = title;
-        this.publisher = publisher;
+        this.pDate = pDate;
+        this.publisherId = publisherId;
     }
 
-    public String getId() {
-        return id;
+    public String getDocId() {
+        return docId;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getPublisher() {
-        return publisher;
+    public Date getPDate() {
+        return pDate;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setDocId(String docId) {
+        this.docId = docId;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
+    public void setPDate(Date pDate) {
+        this.pDate = pDate;
+    }
+
+    public String getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(String publisherId) {
+        this.publisherId = publisherId;
     }
 }
 
