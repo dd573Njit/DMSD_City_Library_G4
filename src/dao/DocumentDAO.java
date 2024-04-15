@@ -3,10 +3,7 @@ import model.Document;
 import util.DatabaseConnection;
 import util.SessionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +59,18 @@ public class DocumentDAO {
             e.printStackTrace();
         }
         return documents;
+    }
+
+    public void addDocument(Document document) throws SQLException {
+        String sql = "INSERT INTO DOCUMENTS (DOCID, TITLE, PDATE, PUBLISHERID) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, document.getDocId());
+            pstmt.setString(2, document.getTitle());
+            pstmt.setTimestamp(3, new Timestamp(document.getPDate().getTime()));
+            pstmt.setString(4, document.getPublisherId());
+            pstmt.executeUpdate();
+        }
     }
 }
 
