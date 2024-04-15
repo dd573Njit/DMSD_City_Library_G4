@@ -131,6 +131,15 @@ public class AdminView extends JFrame {
         panel.add(textField, gbc);
     }
 
+    private void setupPanelsWithCardLayout() {
+        cardPanel = new JPanel(new CardLayout());  // This holds the panels like cards
+        cardPanel.add(readerPanel, "Reader Panel");
+        cardPanel.add(documentPanel, "Document Panel");
+
+        // Add the card panel to the frame
+        add(cardPanel, BorderLayout.CENTER);
+    }
+
     public JButton getBtnAddReader() {
         return btnAddReader;
     }
@@ -155,62 +164,69 @@ public class AdminView extends JFrame {
         return btnAddCurrentDoc;
     }
 
-    public JTextField getTxtPubId() {
-        return txtPubId;
+    public String getTxtPubId() {
+        return txtPubId.getText();
     }
 
-    public JTextField getTxtPubName() {
-        return txtPubName;
+    public String getTxtPubName() {
+        return txtPubName.getText();
     }
 
-    public JTextField getTxtPubAddress() {
-        return txtPubAddress;
+    public String getTxtPubAddress() {
+        return txtPubAddress.getText();
     }
 
-    public JTextField getTxtDocId() {
-        return txtDocId;
+    public String getTxtDocId() {
+        return txtDocId.getText();
     }
 
-    public JTextField getTxtDocTitle() {
-        return txtDocTitle;
+    public String getTxtDocTitle() {
+        return txtDocTitle.getText();
     }
 
-    public JTextField getTxtRId() {
-        return txtRId;
+    public String getTxtRId() {
+        return txtRId.getText();
     }
 
-    public JTextField getTxtRName() {
-        return txtRName;
+    public String getTxtRName() {
+        return txtRName.getText();
     }
 
-    public JTextField getTxtRAddress() {
-        return txtRAddress;
+    public String getTxtRAddress() {
+        return txtRAddress.getText();
     }
 
-    public JTextField getTxtRPhone() {
-        return txtRPhone;
+    public String getTxtRPhone() {
+        return txtRPhone.getText();
     }
 
-    public JTextField getTxtRType() {
-        return txtRType;
+    public String getTxtRType() {
+        return txtRType.getText();
     }
 
     public JButton getBtnAddCurrentReader() {
         return btnAddCurrentReader;
     }
 
-    private void setupPanelsWithCardLayout() {
-        cardPanel = new JPanel(new CardLayout());  // This holds the panels like cards
-        cardPanel.add(documentPanel, "Document Panel");
-        cardPanel.add(readerPanel, "Reader Panel");
-
-        // Add the card panel to the frame
-        add(cardPanel, BorderLayout.CENTER);
-    }
-
     // Method in controller or somewhere to switch panels
     public void showPanel(String cardName) {
         CardLayout cl = (CardLayout)(cardPanel.getLayout());
         cl.show(cardPanel, cardName);  // Switches to the given card by name
+    }
+
+    public boolean areAllDocFieldsFilled() {
+        if(txtDocId.getText().isEmpty() || txtDocTitle.getText().isEmpty() || txtPubAddress.getText().isEmpty() || txtPubId.getText().isEmpty() || txtPubName.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Some fields are empty", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean areAllReaderFieldsFilled() {
+        if(txtRType.getText().isEmpty() || txtRId.getText().isEmpty() || txtRPhone.getText().isEmpty() || txtRAddress.getText().isEmpty() || txtRAddress.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Some fields are empty", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 }
