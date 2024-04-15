@@ -38,7 +38,7 @@ public class ReaderController {
     }
 
     private void showReturnableDocuments() {
-        String readerId = "st888"; // Placeholder for actual reader ID logic
+        String readerId = "RID001"; // Placeholder for actual reader ID logic
         String[] documents = documentDAO.getReturnableDocuments(readerId).toArray(new String[0]);
         readerView.setComponentVisibility(false); // Hide search components
         readerView.displayDocuments(documents);
