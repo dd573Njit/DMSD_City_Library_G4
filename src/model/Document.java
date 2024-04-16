@@ -27,24 +27,13 @@ public class Document {
         return pDate;
     }
 
-    public void setDocId(String docId) {
-        this.docId = docId;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setPDate(Date pDate) {
-        this.pDate = pDate;
-    }
-
     public String getPublisherId() {
         return publisherId;
     }
 
-    public void setPublisherId(String publisherId) {
-        this.publisherId = publisherId;
+    @Override
+    public String toString() {
+        return title;  // This will be used by JList for display
     }
 }
 

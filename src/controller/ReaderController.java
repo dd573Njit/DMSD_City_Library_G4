@@ -1,8 +1,11 @@
 package controller;
 
 import dao.DocumentDAO;
+import model.Document;
 import util.SessionManager;
 import view.ReaderView;
+
+import java.util.List;
 
 public class ReaderController {
     private final ReaderView readerView;
@@ -26,6 +29,7 @@ public class ReaderController {
         readerView.getBtnLogout().addActionListener(e -> logoutHandler());
         readerView.getSearchText().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
         readerView.getBtnSearch().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
+        readerView.getBtnAddDocument().addActionListener(e -> readerView.getSelectedDocuments());
     }
 
     private void activateSearch(String label) {
@@ -33,12 +37,12 @@ public class ReaderController {
     }
 
     private void performSearch(String query) {
-        String[] results = documentDAO.searchDocuments(query).toArray(new String[0]);
+        List<Document> results = documentDAO.searchDocuments(query); // Method now returns List<DocumentData>
         readerView.displayDocuments(results);
     }
 
     private void showReturnableDocuments() { // Placeholder for actual reader ID logic
-        String[] documents = documentDAO.getReturnableDocuments().toArray(new String[0]);
+        List<Document> documents = documentDAO.getReturnableDocuments();
         readerView.setComponentVisibility(false); // Hide search components
         readerView.displayDocuments(documents);
     }
