@@ -36,4 +36,3 @@ public class Document {
         return title;  // This will be used by JList for display
     }
 }
-

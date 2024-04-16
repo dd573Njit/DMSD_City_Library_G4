@@ -1,5 +1,6 @@
 package dao;
 import model.Document;
+import model.DocumentDetail;
 import util.DatabaseConnection;
 import util.SessionManager;
 
@@ -23,9 +24,9 @@ public class DocumentDAO {
         return documents;
     }
 
-    public List<Document> searchDocuments(String query) {
-        List<Document> results = new ArrayList<>();
-        String sql = "SELECT DOCID, TITLE, PDATE, PUBLISHERID FROM DOCUMENTS WHERE TITLE LIKE ? OR DOCID LIKE ? OR PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?);";
+    public List<DocumentDetail> searchDocuments(String query) {
+        List<DocumentDetail> results = new ArrayList<>();
+        String sql = "SELECT d.DOCID, d.TITLE, COPYNO, BID FROM DOCUMENTS d, COPIES c WHERE d.TITLE LIKE ? OR d.DOCID LIKE ? OR PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?) and d.DOCID = c.DOCID;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, "%" + query + "%");
@@ -33,7 +34,7 @@ public class DocumentDAO {
             pstmt.setString(3, "%" + query + "%");
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    results.add(new Document(rs.getString("DOCID"), rs.getString("TITLE"), rs.getDate("PDATE"), rs.getString("PUBLISHERID")));
+                    results.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
                 }
             }
         } catch (SQLException e) {
@@ -44,15 +45,15 @@ public class DocumentDAO {
     }
 
 
-    public List<Document> getReturnableDocuments() {
-        List<Document> results = new ArrayList<>();
-        String sql = "SELECT DOCID, TITLE, PDATE, PUBLISHERID from DOCUMENTS d JOIN BORROWS b on d.DOCID = b.DOCID where b.RID = ?;";  // Adjust the SQL based on your schema
+    public List<DocumentDetail> getReturnableDocuments() {
+        List<DocumentDetail> results = new ArrayList<>();
+        String sql = "SELECT d.DOCID, d.TITLE, COPYNO, BID from DOCUMENTS d JOIN COPIES c on d.DOCID = c.DOCID JOIN BORROWS b on d.DOCID = b.DOCID where b.RID = ?;";  // Adjust the SQL based on your schema
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, SessionManager.getInstance().getCurrentReaderCardNumber());
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    results.add(new Document(rs.getString("DOCID"), rs.getString("TITLE"), rs.getDate("PDATE"), rs.getString("PUBLISHERID")));
+                    results.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
                 }
             }
         } catch (SQLException e) {

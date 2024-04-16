@@ -1,4 +1,6 @@
 package view;
 
-public class ReserveView {
+import javax.swing.*;
+
+public class ReserveView extends JFrame {
 }

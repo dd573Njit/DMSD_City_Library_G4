@@ -1,5 +1,6 @@
 package view;
 import model.Document;
+import model.DocumentDetail;
 import util.ToggleSelectionModel;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class ReaderView extends JFrame {
     private JButton btnLogout;
     private JButton btnSearch; // Search button
     private JButton btnAddDocument;
-    private JList<Document> documentList;  // To display document details or search results
+    private JList<DocumentDetail> documentList;  // To display document details or search results
     private JLabel searchLabel;
 
     public ReaderView() {
@@ -118,17 +119,15 @@ public class ReaderView extends JFrame {
         return searchText;
     }
 
-    public void displayDocuments(List<Document> documents) {
-        DefaultListModel<Document> model = new DefaultListModel<>();
-        for (Document doc : documents) {
+    public void displayDocuments(List<DocumentDetail> documents) {
+        DefaultListModel<DocumentDetail> model = new DefaultListModel<>();
+        for (DocumentDetail doc : documents) {
             model.addElement(doc);
         }
         documentList.setModel(model);
     }
 
-    public void getSelectedDocuments() {
-        for(int i = 0; i < documentList.getSelectedValuesList().size(); i++) {
-            System.out.println(documentList.getSelectedValuesList().get(i).getDocId() + " -- " + documentList.getSelectedValuesList().get(i).getTitle());
-        }
+    public List<DocumentDetail> getSelectedDocuments() {
+        return documentList.getSelectedValuesList();
     }
 }

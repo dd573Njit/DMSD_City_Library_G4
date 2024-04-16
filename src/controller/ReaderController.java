@@ -2,14 +2,18 @@ package controller;
 
 import dao.DocumentDAO;
 import model.Document;
+import model.DocumentDetail;
 import util.SessionManager;
+import view.CheckoutView;
 import view.ReaderView;
+import view.ReserveView;
 
 import java.util.List;
 
 public class ReaderController {
     private final ReaderView readerView;
     private final DocumentDAO documentDAO;
+    private boolean isReserved;
 
     public ReaderController() {
         readerView = new ReaderView();
@@ -22,8 +26,14 @@ public class ReaderController {
     }
 
     private void attachHandlers() {
-        readerView.getBtnReserveDocument().addActionListener(e -> activateSearch("Enter document ID or title to reserve:"));
-        readerView.getBtnCheckoutDocument().addActionListener(e -> activateSearch("Enter document ID or title to checkout:"));
+        readerView.getBtnReserveDocument().addActionListener(e -> {
+            isReserved = true;
+            activateSearch();
+        });
+        readerView.getBtnCheckoutDocument().addActionListener(e -> {
+            isReserved = false;
+            activateSearch();
+        });
         readerView.getBtnReturnDocument().addActionListener(e -> showReturnableDocuments());
         readerView.getBtnListDocument().addActionListener(e -> showReturnableDocuments());
         readerView.getBtnLogout().addActionListener(e -> logoutHandler());
@@ -32,17 +42,17 @@ public class ReaderController {
         readerView.getBtnAddDocument().addActionListener(e -> readerView.getSelectedDocuments());
     }
 
-    private void activateSearch(String label) {
+    private void activateSearch() {
         readerView.setComponentVisibility(true);
     }
 
     private void performSearch(String query) {
-        List<Document> results = documentDAO.searchDocuments(query); // Method now returns List<DocumentData>
+        List<DocumentDetail> results = documentDAO.searchDocuments(query); // Method now returns List<DocumentData>
         readerView.displayDocuments(results);
     }
 
     private void showReturnableDocuments() { // Placeholder for actual reader ID logic
-        List<Document> documents = documentDAO.getReturnableDocuments();
+        List<DocumentDetail> documents = documentDAO.getReturnableDocuments();
         readerView.setComponentVisibility(false); // Hide search components
         readerView.displayDocuments(documents);
     }
@@ -50,5 +60,18 @@ public class ReaderController {
     private void logoutHandler() {
         SessionManager.getInstance().setCurrentReaderCardNumber(null);
         readerView.dispose();
+    }
+
+    private void documentReserveOrCheckout() {
+        List<DocumentDetail> documents = readerView.getSelectedDocuments();
+        if(isReserved) {
+            ReserveView reserveView = new ReserveView();
+            reserveView.setVisible(true);
+        }
+        else {
+            CheckoutView checkoutView = new CheckoutView();
+            checkoutView.setVisible(true);
+        }
+
     }
 }
