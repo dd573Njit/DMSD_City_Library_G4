@@ -25,7 +25,7 @@ public class DocumentDAO {
 
     public List<String> searchDocuments(String query) {
         List<String> results = new ArrayList<>();
-        String sql = "select TITLE from DOCUMENTS where TITLE like ? or DOCID like ? or PUBLISHERID = (select PUBLISHERID from PUBLISHERS where PUBNAME like ?);";  // Adjust according to your database schema
+        String sql = "select TITLE from DOCUMENTS where TITLE like ? or DOCID like ? or PUBLISHERID in (select PUBLISHERID from PUBLISHERS where PUBNAME like ?);";  // Adjust according to your database schema
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, "%" + query + "%");
