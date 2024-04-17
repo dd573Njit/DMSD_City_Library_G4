@@ -1,7 +1,6 @@
 package controller;
 
 import dao.DocumentDAO;
-import model.Document;
 import model.DocumentDetail;
 import util.SessionManager;
 import view.CheckoutView;
@@ -13,7 +12,7 @@ import java.util.List;
 public class ReaderController {
     private final ReaderView readerView;
     private final DocumentDAO documentDAO;
-    private boolean isReserved;
+    private boolean isReserved = true;
 
     public ReaderController() {
         readerView = new ReaderView();
@@ -39,7 +38,7 @@ public class ReaderController {
         readerView.getBtnLogout().addActionListener(e -> logoutHandler());
         readerView.getSearchText().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
         readerView.getBtnSearch().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
-        readerView.getBtnAddDocument().addActionListener(e -> readerView.getSelectedDocuments());
+        readerView.getBtnAddDocument().addActionListener(e -> documentReserveOrCheckout());
     }
 
     private void activateSearch() {
@@ -65,12 +64,10 @@ public class ReaderController {
     private void documentReserveOrCheckout() {
         List<DocumentDetail> documents = readerView.getSelectedDocuments();
         if(isReserved) {
-            ReserveView reserveView = new ReserveView();
-            reserveView.setVisible(true);
+            new ReserveController().showReserveView(documents);
         }
         else {
-            CheckoutView checkoutView = new CheckoutView();
-            checkoutView.setVisible(true);
+            new CheckoutController().showCheckoutView(documents);
         }
 
     }
