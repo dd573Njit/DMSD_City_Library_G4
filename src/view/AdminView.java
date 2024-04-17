@@ -18,6 +18,9 @@ public class AdminView extends JFrame {
     private JTextField txtPubAddress;
     private JTextField txtDocId;
     private JTextField txtDocTitle;
+    private JTextField txtCopyNumber;
+    private JTextField txtBranchId;
+    private JTextField txtCopyPosition;
     private JPanel documentPanel;
 
     //Reader panel
@@ -85,12 +88,18 @@ public class AdminView extends JFrame {
         txtDocTitle = new JTextField(5);
         txtPubName = new JTextField(5);
         txtPubAddress = new JTextField(5);
+        txtCopyNumber = new JTextField(5);
+        txtBranchId = new JTextField(5);
+        txtCopyPosition = new JTextField(5);
 
         addLabelAndField(documentPanel, "Publisher ID:", txtPubId, 0, gbc);
         addLabelAndField(documentPanel, "Publisher Name:", txtPubName, 1, gbc);
         addLabelAndField(documentPanel, "Address:", txtPubAddress, 2, gbc);
         addLabelAndField(documentPanel, "Doc ID:", txtDocId, 3, gbc);
         addLabelAndField(documentPanel, "Doc Title:", txtDocTitle, 4, gbc);
+        addLabelAndField(documentPanel, "Doc Copy Number:", txtCopyNumber, 5, gbc);
+        addLabelAndField(documentPanel, "Branch ID:", txtBranchId, 6, gbc);
+        addLabelAndField(documentPanel, "Copy Position:", txtCopyPosition, 7, gbc);
         btnAddCurrentDoc = new JButton("Add Current Document");
         documentPanel.add(btnAddCurrentDoc);
 
@@ -195,6 +204,18 @@ public class AdminView extends JFrame {
         return txtDocTitle.getText();
     }
 
+    public String getTxtCopyNumber() {
+        return txtCopyNumber.getText();
+    }
+
+    public String getTxtBranchId() {
+        return txtBranchId.getText();
+    }
+
+    public String getCopyPosition() {
+        return txtCopyPosition.getText();
+    }
+
     public String getTxtRId() {
         return txtRId.getText();
     }
@@ -226,7 +247,7 @@ public class AdminView extends JFrame {
     }
 
     public boolean areAllDocFieldsFilled() {
-        if(txtDocId.getText().isEmpty() || txtDocTitle.getText().isEmpty() || txtPubAddress.getText().isEmpty() || txtPubId.getText().isEmpty() || txtPubName.getText().isEmpty()) {
+        if(txtDocId.getText().isEmpty() || txtDocTitle.getText().isEmpty() || txtPubAddress.getText().isEmpty() || txtPubId.getText().isEmpty() || txtPubName.getText().isEmpty() || txtCopyNumber.getText().isEmpty() || txtBranchId.getText().isEmpty() || txtCopyPosition.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Some fields are empty", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
