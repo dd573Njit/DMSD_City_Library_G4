@@ -4,6 +4,7 @@ import dao.ReserveDAO;
 import model.DocumentDetail;
 import model.Reservation;
 import model.Reserves;
+import util.MessageUtil;
 import util.SessionManager;
 import view.ReserveView;
 
@@ -35,7 +36,7 @@ public class ReserveController {
         String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
         int resCount = reserveDAO.getReservationCountForAReader(rId);
         if(resCount >= 10) {
-            JOptionPane.showMessageDialog(null, "Reservation successful", "Error", JOptionPane.ERROR_MESSAGE);
+            MessageUtil.showErrorMessage("You already have 10 reserved docs", reserveView);
             return;
         }
         else {
@@ -59,9 +60,10 @@ public class ReserveController {
                 String bId = documentDetail.getBId();
                 Reserves reserves = new Reserves(rId, resId, docId, copyNo, bId);
                 reserveDAO.reserveReaderDetail(reserves);
+                MessageUtil.showSuccessMessage("Successfully Reserved", reserveView);
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            MessageUtil.showErrorMessage("Document already Reserved", reserveView);
         }
     }
 }
