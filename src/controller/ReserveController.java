@@ -27,16 +27,10 @@ public class ReserveController {
     }
 
     private void attachHandlers() {
-        reserveView.getBtnReserve().addActionListener(e -> {
-            try {
-                reserveDocDetail();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        reserveView.getBtnReserve().addActionListener(e -> reserveDetail());
     }
 
-    private void reserveDocDetail() throws SQLException {
+    private void reserveDetail() {
         ReserveDAO reserveDAO = new ReserveDAO();
         String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
         int resCount = reserveDAO.getReservationCountForAReader(rId);
@@ -47,16 +41,27 @@ public class ReserveController {
         else {
             //String resId = String.format("RES0%d", resCount);
             int resId = resCount + 1;
-            Reservation reservation = new Reservation(resId, new Date());
-            reserveDAO.reserveNumberAndDate(reservation);
-            for(DocumentDetail documentDetail : documentDetail) {
+            try {
+                Reservation reservation = new Reservation(resId, new Date());
+                reserveDAO.reserveNumberAndDate(reservation);
+                reserveDocDetail(reserveDAO,rId,resId);
+            } catch (SQLException ex) {
+                reserveDocDetail(reserveDAO,rId,resId);
+            }
+        }
+    }
+
+    private void reserveDocDetail(ReserveDAO reserveDAO, String rId, int resId) {
+        try {
+            for (DocumentDetail documentDetail : documentDetail) {
                 String docId = documentDetail.getDocId();
                 String copyNo = documentDetail.getCopyNo();
                 String bId = documentDetail.getBId();
-                Reserves reserves = new Reserves(rId,resId,docId,copyNo,bId);
+                Reserves reserves = new Reserves(rId, resId, docId, copyNo, bId);
                 reserveDAO.reserveReaderDetail(reserves);
             }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         }
-        JOptionPane.showMessageDialog(null, "Reservation successful", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 }
