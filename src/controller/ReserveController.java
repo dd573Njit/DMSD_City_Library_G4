@@ -8,7 +8,6 @@ import util.MessageUtil;
 import util.SessionManager;
 import view.ReserveView;
 
-import javax.swing.*;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +28,11 @@ public class ReserveController {
 
     private void attachHandlers() {
         reserveView.getBtnReserve().addActionListener(e -> reserveDetail());
+        reserveView.getBtnQuit().addActionListener(e -> closeReserveView());
+    }
+
+    private void closeReserveView() {
+        reserveView.dispose();
     }
 
     private void reserveDetail() {

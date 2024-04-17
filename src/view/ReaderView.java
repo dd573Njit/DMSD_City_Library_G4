@@ -16,7 +16,6 @@ public class ReaderView extends JFrame {
     private JButton btnLogout;
     private JButton btnSearch;
     private JList<DocumentDetail> documentList;
-    private JLabel searchLabel;
 
     public ReaderView() {
         initializeUI();
@@ -46,7 +45,7 @@ public class ReaderView extends JFrame {
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.LINE_AXIS));
         searchPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-        searchLabel = new JLabel("Search Document:");
+        JLabel searchLabel = new JLabel("Search Document:");
         searchText = new JTextField();
         searchText.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         searchText.setForeground(Color.GRAY);
