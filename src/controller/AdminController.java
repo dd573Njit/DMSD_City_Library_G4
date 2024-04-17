@@ -28,11 +28,7 @@ public class AdminController {
         adminView.getBtnBranchInfo().addActionListener(e -> showBranchInfo());
         adminView.getBtnAddCurrentDoc().addActionListener(e -> {
             if(adminView.areAllDocFieldsFilled()) {
-                try {
-                    addDocDetail();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
+                addPublisherDetail();
             }
         });
 
@@ -53,25 +49,44 @@ public class AdminController {
         adminView.dispose();
     }
 
-    private void addDocDetail() throws SQLException {
-        String docId = adminView.getTxtDocId();
-        String docTitle = adminView.getTxtDocTitle();
+    private  void addPublisherDetail() {
         String pubId = adminView.getTxtPubId();
         String pubName = adminView.getTxtPubName();
         String pubAddress = adminView.getTxtPubAddress();
+        try {
+            Publisher publisher = new Publisher(pubId, pubName, pubAddress);
+            PublisherDAO publisherDAO = new PublisherDAO();
+            publisherDAO.addPublisher(publisher);
+            addDocDetail(pubId);
+        } catch (SQLException ex) {
+            addDocDetail(pubId);
+        }
+    }
+
+    private void addDocDetail(String pubId) {
+        String docId = adminView.getTxtDocId();
+        String docTitle = adminView.getTxtDocTitle();
+        try {
+            Document document = new Document(docId, docTitle, new Date(), pubId);
+            DocumentDAO documentDAO = new DocumentDAO();
+            documentDAO.addDocument(document);
+            addCopyDetail(docId);
+        } catch (SQLException ex) {
+            addCopyDetail(docId);
+        }
+    }
+
+    private void addCopyDetail(String docId) {
         String copyNo = adminView.getTxtCopyNumber();
         String bId = adminView.getTxtBranchId();
         String position = adminView.getCopyPosition();
-
-        Publisher publisher = new Publisher(pubId, pubName, pubAddress);
-        Document document = new Document(docId,docTitle,new Date(),pubId);
-        Copy copy = new Copy(docId, copyNo, bId, position);
-        PublisherDAO publisherDAO = new PublisherDAO();
-        DocumentDAO documentDAO = new DocumentDAO();
-        CopyDAO copyDAO = new CopyDAO();
-        publisherDAO.addPublisher(publisher);
-        documentDAO.addDocument(document);
-        copyDAO.addCopy(copy);
+        try {
+            Copy copy = new Copy(docId, copyNo, bId, position);
+            CopyDAO copyDAO = new CopyDAO();
+            copyDAO.addCopy(copy);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private void addReaderDetail() throws SQLException {

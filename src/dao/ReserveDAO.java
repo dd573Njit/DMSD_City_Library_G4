@@ -7,18 +7,20 @@ import util.DatabaseConnection;
 import java.sql.*;
 
 public class ReserveDAO {
-    public int getReservationCount() {
-        String sql = "SELECT COUNT(*) AS count FROM RESERVE";
+    public int getReservationCountForAReader(String query) {
+        String sql = "SELECT COUNT(*) AS count FROM RESERVES WHERE RID = ?";
         int count = 0;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             pstmt.setString(1, "%" + query + "%");
+             ResultSet rs = pstmt.executeQuery(); {
 
             if (rs.next()) {
                 count = rs.getInt("count");
             }
-        } catch (SQLException e) {
+        }
+        }catch (SQLException e) {
             System.err.println("Error retrieving reservation count: " + e.getMessage());
             e.printStackTrace();
         }
@@ -43,6 +45,8 @@ public class ReserveDAO {
             pstmt.setString(1, reserves.getRId());
             pstmt.setInt(2, reserves.getReservationNo());
             pstmt.setString(3, reserves.getDocId());
+            pstmt.setString(4, reserves.getCopyNo());
+            pstmt.setString(5, reserves.getBId());
             pstmt.executeUpdate();
         }
     }
