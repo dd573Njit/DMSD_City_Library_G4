@@ -26,7 +26,8 @@ public class DocumentDAO {
 
     public List<DocumentDetail> searchDocuments(String query) {
         List<DocumentDetail> results = new ArrayList<>();
-        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID FROM DOCUMENTS d, COPIES c WHERE d.TITLE LIKE ? OR d.DOCID LIKE ? OR PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?) and d.DOCID = c.DOCID;";
+//        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID FROM DOCUMENTS d, COPIES c WHERE d.TITLE LIKE ? OR d.DOCID LIKE ? OR PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?) and d.DOCID = c.DOCID;";
+        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID FROM DOCUMENTS d JOIN COPIES c ON d.DOCID = c.DOCID LEFT JOIN BORROWS b ON b.DOCID = d.DOCID AND b.COPYNO = c.COPYNO AND b.BID = c.BID LEFT JOIN RESERVES r ON r.DOCID = d.DOCID AND r.COPYNO = c.COPYNO AND r.BID = c.BID WHERE (d.TITLE LIKE ? OR d.DOCID LIKE ? OR d.PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?)) AND b.BOR_NO IS NULL AND r.RESERVATION_NO IS NULL";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, "%" + query + "%");
