@@ -2,21 +2,25 @@ package controller;
 
 import dao.DocumentDAO;
 import model.DocumentDetail;
+import util.MessageUtil;
 import util.SessionManager;
-import view.CheckoutView;
 import view.ReaderView;
-import view.ReserveView;
 
 import java.util.List;
 
 public class ReaderController {
     private final ReaderView readerView;
+    private final ListDocumentController listDocumentController;
+    private final ReturnDocumentsController returnDocumentsController;
     private final DocumentDAO documentDAO;
-    private boolean isReserved = true;
+    private final List<DocumentDetail> documents;
 
     public ReaderController() {
         readerView = new ReaderView();
         documentDAO = new DocumentDAO();
+        listDocumentController = new ListDocumentController();
+        returnDocumentsController = new ReturnDocumentsController();
+        documents = documentDAO.getReturnableDocuments();
         attachHandlers();
     }
 
@@ -25,24 +29,13 @@ public class ReaderController {
     }
 
     private void attachHandlers() {
-        readerView.getBtnReserveDocument().addActionListener(e -> {
-            isReserved = true;
-            activateSearch();
-        });
-        readerView.getBtnCheckoutDocument().addActionListener(e -> {
-            isReserved = false;
-            activateSearch();
-        });
+        readerView.getBtnReserveDocument().addActionListener(e -> showReserveDocument());
+        readerView.getBtnCheckoutDocument().addActionListener(e -> showCheckoutDocument());
         readerView.getBtnReturnDocument().addActionListener(e -> showReturnableDocuments());
-        readerView.getBtnListDocument().addActionListener(e -> showReturnableDocuments());
+        readerView.getBtnListDocument().addActionListener(e -> openListDocument());
         readerView.getBtnLogout().addActionListener(e -> logoutHandler());
         readerView.getSearchText().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
         readerView.getBtnSearch().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
-        readerView.getBtnAddDocument().addActionListener(e -> documentReserveOrCheckout());
-    }
-
-    private void activateSearch() {
-        readerView.setComponentVisibility(true);
     }
 
     private void performSearch(String query) {
@@ -50,10 +43,12 @@ public class ReaderController {
         readerView.displayDocuments(results);
     }
 
-    private void showReturnableDocuments() { // Placeholder for actual reader ID logic
-        List<DocumentDetail> documents = documentDAO.getReturnableDocuments();
-        readerView.setComponentVisibility(false); // Hide search components
-        readerView.displayDocuments(documents);
+    private void showReturnableDocuments() {
+        returnDocumentsController.showReturnDocuments(documents);
+    }
+
+    private void openListDocument() {
+        listDocumentController.showListDocument(documents);
     }
 
     private void logoutHandler() {
@@ -61,14 +56,21 @@ public class ReaderController {
         readerView.dispose();
     }
 
-    private void documentReserveOrCheckout() {
+    private void showReserveDocument() {
         List<DocumentDetail> documents = readerView.getSelectedDocuments();
-        if(isReserved) {
-            new ReserveController().showReserveView(documents);
+        if(documents.isEmpty()) {
+            MessageUtil.showErrorMessage("No Documents selected",readerView);
+            return;
         }
-        else {
-            new CheckoutController().showCheckoutView(documents);
-        }
+        new ReserveController().showReserveView(documents);
+    }
 
+    private void showCheckoutDocument() {
+        List<DocumentDetail> documents = readerView.getSelectedDocuments();
+        if(documents.isEmpty()) {
+            MessageUtil.showErrorMessage("No Documents selected",readerView);
+            return;
+        }
+        new CheckoutController().showCheckoutView(documents);
     }
 }

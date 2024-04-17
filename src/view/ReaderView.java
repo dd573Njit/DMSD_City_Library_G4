@@ -14,9 +14,8 @@ public class ReaderView extends JFrame {
     private JButton btnCheckoutDocument;
     private JButton btnListDocument;
     private JButton btnLogout;
-    private JButton btnSearch; // Search button
-    private JButton btnAddDocument;
-    private JList<DocumentDetail> documentList;  // To display document details or search results
+    private JButton btnSearch;
+    private JList<DocumentDetail> documentList;
     private JLabel searchLabel;
 
     public ReaderView() {
@@ -35,7 +34,6 @@ public class ReaderView extends JFrame {
         btnCheckoutDocument = new JButton("Checkout Document");
         btnListDocument = new JButton("List Document");
         btnLogout = new JButton("Logout");
-        btnAddDocument = new JButton("Add Document");
 
         topPanel.add(btnReserveDocument);
         topPanel.add(btnReturnDocument);
@@ -59,7 +57,6 @@ public class ReaderView extends JFrame {
         searchPanel.add(searchText);
         searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         searchPanel.add(btnSearch);
-        searchPanel.add(btnAddDocument);
 
         // Container panel that includes both the top panel and search panel
         JPanel northPanel = new JPanel();
@@ -76,15 +73,6 @@ public class ReaderView extends JFrame {
         documentList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         dynamicPanel.add(new JScrollPane(documentList), BorderLayout.CENTER);
         add(dynamicPanel, BorderLayout.CENTER);
-    }
-
-    public void setComponentVisibility(boolean visible) {
-        searchText.setVisible(visible);
-        searchLabel.setVisible(visible);
-        btnSearch.setVisible(visible);
-        if (!visible) {
-            searchText.setText("");
-        }
     }
 
     public JButton getBtnReserveDocument() {
@@ -109,10 +97,6 @@ public class ReaderView extends JFrame {
 
     public JButton getBtnSearch() {
         return btnSearch;
-    }
-
-    public JButton getBtnAddDocument() {
-        return btnAddDocument;
     }
 
     public JTextField getSearchText() {
