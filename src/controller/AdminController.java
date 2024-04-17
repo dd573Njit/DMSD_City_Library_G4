@@ -2,6 +2,7 @@ package controller;
 
 import dao.*;
 import model.*;
+import util.MessageUtil;
 import util.SessionManager;
 import view.AdminView;
 
@@ -34,11 +35,7 @@ public class AdminController {
 
         adminView.getBtnAddCurrentReader().addActionListener(e -> {
             if(adminView.areAllReaderFieldsFilled()) {
-                try {
-                    addReaderDetail();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
+                addReaderDetail();
             }
         });
     }
@@ -84,21 +81,29 @@ public class AdminController {
             Copy copy = new Copy(docId, copyNo, bId, position);
             CopyDAO copyDAO = new CopyDAO();
             copyDAO.addCopy(copy);
+            MessageUtil.showSuccessMessage("Successfully added",adminView);
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            MessageUtil.showErrorMessage("Same Copy number", adminView);
         }
     }
 
-    private void addReaderDetail() throws SQLException {
+    private void addReaderDetail() {
         String rId = adminView.getTxtRId();
         String rName = adminView.getTxtRName();
         String rAddress = adminView.getTxtRAddress();
-        int rPhone = Integer.parseInt(adminView.getTxtRPhone());
         String rType = adminView.getTxtRType();
 
-        Reader reader = new Reader(rId,rName,rType,rAddress,rPhone);
-        ReaderDAO readerDAO = new ReaderDAO();
-        readerDAO.addReader(reader);
+        try {
+            int rPhone = Integer.parseInt(adminView.getTxtRPhone());
+            Reader reader = new Reader(rId, rName, rType, rAddress, rPhone);
+            ReaderDAO readerDAO = new ReaderDAO();
+            readerDAO.addReader(reader);
+            MessageUtil.showSuccessMessage("Successfully added",adminView);
+        } catch(NumberFormatException e) {
+            MessageUtil.showErrorMessage("Phone Number is not correct", adminView);
+        } catch (SQLException ex) {
+            MessageUtil.showErrorMessage("Reader already Exists", adminView);
+        }
     }
 
     private void showBranchInfo() {
