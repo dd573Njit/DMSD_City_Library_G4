@@ -1,13 +1,7 @@
 package controller;
 
-import dao.BranchDAO;
-import dao.DocumentDAO;
-import dao.PublisherDAO;
-import dao.ReaderDAO;
-import model.Branch;
-import model.Document;
-import model.Publisher;
-import model.Reader;
+import dao.*;
+import model.*;
 import util.SessionManager;
 import view.AdminView;
 
@@ -65,13 +59,19 @@ public class AdminController {
         String pubId = adminView.getTxtPubId();
         String pubName = adminView.getTxtPubName();
         String pubAddress = adminView.getTxtPubAddress();
+        String copyNo = adminView.getTxtCopyNumber();
+        String bId = adminView.getTxtBranchId();
+        String position = adminView.getCopyPosition();
 
         Publisher publisher = new Publisher(pubId, pubName, pubAddress);
         Document document = new Document(docId,docTitle,new Date(),pubId);
+        Copy copy = new Copy(docId, copyNo, bId, position);
         PublisherDAO publisherDAO = new PublisherDAO();
         DocumentDAO documentDAO = new DocumentDAO();
+        CopyDAO copyDAO = new CopyDAO();
         publisherDAO.addPublisher(publisher);
         documentDAO.addDocument(document);
+        copyDAO.addCopy(copy);
     }
 
     private void addReaderDetail() throws SQLException {
