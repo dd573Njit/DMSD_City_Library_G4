@@ -20,6 +20,7 @@ public class AdminController {
 
     public void showAdminView() {
         adminView.setVisible(true);
+        adminView.populateBranchNumbers(new BranchDAO().getBranchNumbers());
     }
 
     private void attachHandlers() {
@@ -76,7 +77,7 @@ public class AdminController {
 
     private void addCopyDetail(String docId) {
         String copyNo = adminView.getTxtCopyNumber();
-        String bId = adminView.getTxtBranchId();
+        String bId = adminView.getSelectedBranchNumber();
         String position = adminView.getCopyPosition();
         try {
             Copy copy = new Copy(docId, copyNo, bId, position);
@@ -115,6 +116,6 @@ public class AdminController {
             branches.add(String.format("%-25s %s",branch.getLName(),branch.getLocation()));
         }
         adminView.showPanel("Branch Panel");
-        adminView.dsiplayBranchInfo(branches.toArray(new String[0]));
+        adminView.displayBranchInfo(branches.toArray(new String[0]));
     }
 }

@@ -1,6 +1,8 @@
 package view;
 
 import java.awt.*;
+import java.util.List;
+import java.util.Objects;
 import javax.swing.*;
 
 public class AdminView extends JFrame {
@@ -20,7 +22,7 @@ public class AdminView extends JFrame {
     private JTextField txtDocId;
     private JTextField txtDocTitle;
     private JTextField txtCopyNumber;
-    private JTextField txtBranchId;
+    private JComboBox<String> branchNumberComboBox;
     private JTextField txtCopyPosition;
     private JPanel documentPanel;
 
@@ -92,7 +94,7 @@ public class AdminView extends JFrame {
         txtPubName = new JTextField(5);
         txtPubAddress = new JTextField(5);
         txtCopyNumber = new JTextField(5);
-        txtBranchId = new JTextField(5);
+        branchNumberComboBox = new JComboBox<>();
         txtCopyPosition = new JTextField(5);
 
         addLabelAndField(documentPanel, "Publisher ID:", txtPubId, 0, gbc);
@@ -101,8 +103,8 @@ public class AdminView extends JFrame {
         addLabelAndField(documentPanel, "Doc ID:", txtDocId, 3, gbc);
         addLabelAndField(documentPanel, "Doc Title:", txtDocTitle, 4, gbc);
         addLabelAndField(documentPanel, "Doc Copy Number:", txtCopyNumber, 5, gbc);
-        addLabelAndField(documentPanel, "Branch ID:", txtBranchId, 6, gbc);
         addLabelAndField(documentPanel, "Copy Position:", txtCopyPosition, 7, gbc);
+        documentPanel.add(branchNumberComboBox);
         btnAddCurrentDoc = new JButton("Add Current Document");
         documentPanel.add(btnAddCurrentDoc);
 
@@ -215,10 +217,6 @@ public class AdminView extends JFrame {
         return txtCopyNumber.getText();
     }
 
-    public String getTxtBranchId() {
-        return txtBranchId.getText();
-    }
-
     public String getCopyPosition() {
         return txtCopyPosition.getText();
     }
@@ -254,7 +252,7 @@ public class AdminView extends JFrame {
     }
 
     public boolean areAllDocFieldsFilled() {
-        if(txtDocId.getText().isEmpty() || txtDocTitle.getText().isEmpty() || txtPubAddress.getText().isEmpty() || txtPubId.getText().isEmpty() || txtPubName.getText().isEmpty() || txtCopyNumber.getText().isEmpty() || txtBranchId.getText().isEmpty() || txtCopyPosition.getText().isEmpty()) {
+        if(txtDocId.getText().isEmpty() || txtDocTitle.getText().isEmpty() || txtPubAddress.getText().isEmpty() || txtPubId.getText().isEmpty() || txtPubName.getText().isEmpty() || txtCopyNumber.getText().isEmpty() || txtCopyPosition.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Some fields are empty", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -269,7 +267,18 @@ public class AdminView extends JFrame {
         return true;
     }
 
-    public void dsiplayBranchInfo(String[] branches) {
+    public void displayBranchInfo(String[] branches) {
         branchList.setListData(branches);
     }
+
+    public String getSelectedBranchNumber() {
+        return Objects.requireNonNull(branchNumberComboBox.getSelectedItem()).toString();
+    }
+
+    public void populateBranchNumbers(List<String> branchNumbers) {
+        for (String number : branchNumbers) {
+            branchNumberComboBox.addItem(number);
+        }
+    }
+
 }
