@@ -26,7 +26,7 @@ public class AdminController {
         adminView.getBtnLogout().addActionListener(e -> logoutHandler());
         adminView.getBtnAddDoc().addActionListener(e -> adminView.showPanel("Document Panel"));
         adminView.getBtnAddReader().addActionListener(e -> adminView.showPanel("Reader Panel"));
-        adminView.getBtnFreqQuery().addActionListener(e -> adminView.showPanel("Frequent Query Panel"));
+        adminView.getBtnFreqQuery().addActionListener(e -> new FrequentDocController().showFrequentDocView());
         adminView.getBtnBranchInfo().addActionListener(e -> showBranchInfo());
         adminView.getBtnAddCurrentDoc().addActionListener(e -> {
             if(adminView.areAllDocFieldsFilled()) {

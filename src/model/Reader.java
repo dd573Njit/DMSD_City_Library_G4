@@ -34,4 +34,9 @@ public class Reader {
     public int getRPhone_No() {
         return rPhone_No;
     }
+
+    @Override
+    public String toString() {
+        return rID + " " + rName;
+    }
 }
