@@ -24,6 +24,7 @@ public class FrequentDocController {
 
     public void showFrequentDocView() {
         frequentDocView.setVisible(true);
+        frequentDocView.populateBranchNumbers(new BranchDAO().getBranchNumbers());
     }
 
     public void attachHandlers() {
@@ -35,7 +36,7 @@ public class FrequentDocController {
         try {
             int n = Integer.parseInt(frequentDocView.getNumberField());
             List<Reader> readers = null;
-            String bId = frequentDocView.getBranchNumberField();
+            String bId = frequentDocView.getSelectedBranchNumber();
             if (bId.isEmpty())
                 readers = frequentDocDAO.getNFreqBorrowers(n);
             else
@@ -53,7 +54,7 @@ public class FrequentDocController {
 
             int n = Integer.parseInt(frequentDocView.getNumberField());
             List<DocumentDetail> docs = null;
-            String bId = frequentDocView.getBranchNumberField();
+            String bId = frequentDocView.getSelectedBranchNumber();
             if (bId.isEmpty())
                 docs = frequentDocDAO.getNFreqBorrowedDocuments(n);
             else

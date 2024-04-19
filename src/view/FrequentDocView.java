@@ -7,10 +7,11 @@ import java.awt.*;
 import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Objects;
 
 public class FrequentDocView extends JFrame {
     private JTextField numberField;
-    private JTextField branchNumberField;
+    private JComboBox<String> branchNumberComboBox;
     private JButton frequentBorrowersButton;
     private JButton borrowedBooksButton;
     private JList<Reader> readerList;
@@ -36,12 +37,12 @@ public class FrequentDocView extends JFrame {
         JLabel numberLabel = new JLabel("Number:");
         numberField = new JTextField();
         JLabel branchNumberLabel = new JLabel("Branch Number:");
-        branchNumberField = new JTextField();
+        branchNumberComboBox = new JComboBox<>();
 
         textFieldPanel.add(numberLabel);
         textFieldPanel.add(numberField);
         textFieldPanel.add(branchNumberLabel);
-        textFieldPanel.add(branchNumberField);
+        textFieldPanel.add(branchNumberComboBox);
 
         // Setup the button panel on the right
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1)); // Grid layout to stack buttons vertically
@@ -87,10 +88,6 @@ public class FrequentDocView extends JFrame {
         return frequentBorrowersButton;
     }
 
-    public String getBranchNumberField() {
-        return branchNumberField.getText();
-    }
-
     public String getNumberField() {
         return numberField.getText();
     }
@@ -111,5 +108,15 @@ public class FrequentDocView extends JFrame {
         }
         this.documentList.setModel(model);
         showPanel("Documents");
+    }
+
+    public String getSelectedBranchNumber() {
+        return Objects.requireNonNull(branchNumberComboBox.getSelectedItem()).toString();
+    }
+
+    public void populateBranchNumbers(List<String> branchNumbers) {
+        for (String number : branchNumbers) {
+            branchNumberComboBox.addItem(number);
+        }
     }
 }
