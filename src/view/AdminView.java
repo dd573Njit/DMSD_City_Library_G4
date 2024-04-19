@@ -9,6 +9,7 @@ public class AdminView extends JFrame {
     private JButton btnAddDoc;
     private JButton btnSearchDoc;
     private JButton btnBranchInfo;
+    private JButton btnFreqQuery;
     private JButton btnLogout;
 
     //Document panel
@@ -60,11 +61,13 @@ public class AdminView extends JFrame {
         btnAddDoc = new JButton("Add Document");
         btnSearchDoc = new JButton("Search Document");
         btnBranchInfo = new JButton("Branch Info");
+        btnFreqQuery = new JButton("Filter Queries");
         btnLogout = new JButton("Logout");
         topPanel.add(btnAddReader);
         topPanel.add(btnAddDoc);
         topPanel.add(btnSearchDoc);
         topPanel.add(btnBranchInfo);
+        topPanel.add(btnFreqQuery);
         topPanel.add(btnLogout);
 
         JPanel northPanel = new JPanel();
@@ -174,6 +177,10 @@ public class AdminView extends JFrame {
 
     public JButton getBtnBranchInfo() {
         return btnBranchInfo;
+    }
+
+    public JButton getBtnFreqQuery() {
+        return btnFreqQuery;
     }
 
     public JButton getBtnLogout() {
