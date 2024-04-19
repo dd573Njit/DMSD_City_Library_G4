@@ -25,4 +25,19 @@ public class BranchDAO {
         }
         return branches;
     }
+
+    public List<String> getBranchNumbers() {
+        List<String> branchNumbers = new ArrayList<>();
+        String sql = "SELECT BID FROM BRANCHES";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                branchNumbers.add(rs.getString("BID"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching branch numbers: " + e.getMessage());
+        }
+        return branchNumbers;
+    }
 }
