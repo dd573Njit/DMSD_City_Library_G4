@@ -45,12 +45,8 @@ public class CheckoutController {
         else {
             String borNo = String.format("BOR%d",resCount + 1);
             Date bDate = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(bDate);
-            calendar.add(Calendar.DATE, 20);
-            Date rDate = calendar.getTime();
             try {
-                Borrowing borrowing = new Borrowing(borNo, bDate, rDate);
+                Borrowing borrowing = new Borrowing(borNo, bDate, null);
                 checkoutDAO.addBorrowingDate(borrowing);
                 addCheckoutDetail(checkoutDAO,rId,borNo);
             } catch (SQLException ex) {
