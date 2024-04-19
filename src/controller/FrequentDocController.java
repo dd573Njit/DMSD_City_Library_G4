@@ -8,15 +8,17 @@ import view.AdminView;
 import view.FrequentDocView;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FrequentDocController {
     private final FrequentDocView frequentDocView;
-
+    private final FrequentDocDAO frequentDocDAO;
     public FrequentDocController() {
         frequentDocView = new FrequentDocView();
+        frequentDocDAO = new FrequentDocDAO();
         attachHandlers();
     }
 
@@ -25,40 +27,42 @@ public class FrequentDocController {
     }
 
     public void attachHandlers() {
-        frequentDocView.getBtnFreqBorrowers().addActionListener(e -> showFreqBorrowers());
-        frequentDocView.getBtnFreqBorrowedBooks().addActionListener(e -> showFreqBorrowedBooks());
-        frequentDocView.getBtnAvgFinePaid().addActionListener(e -> showAvgFinedReaders());
-        frequentDocView.getBtnBranchInfo().addActionListener(e -> showBranchInfo());
-
-        frequentDocView.getBtnLogout().addActionListener(e -> logoutHandler());
+        frequentDocView.getFrequentBorrowersButton().addActionListener(e -> getNFrequentBorrowers());
+        frequentDocView.getBorrowedBooksButton().addActionListener(e -> getNFrequentDocs());
     }
 
-    private void showFreqBorrowers() {
-        List<String> readers = new ArrayList<>();
-    }
-
-    private void showFreqBorrowedBooks() {
-        List<String> books = new ArrayList<>();
-    }
-
-    private void showAvgFinedReaders() {
-        List<String> readers = new ArrayList<>();
-    }
-
-    private void showBranchInfo() {
-        BranchDAO branchDAO = new BranchDAO();
-        List<String> branches = new ArrayList<>();
-        branches.add(String.format("%-20s %s", "Branch Name", "Branch Location"));
-        for(Branch branch : branchDAO.getAllBranches()) {
-            branches.add(String.format("%-25s %s", branch.getLName(), branch.getLocation()));
+    private void getNFrequentBorrowers() {
+        try {
+            int n = Integer.parseInt(frequentDocView.getNumberField());
+            List<Reader> readers = null;
+            String bId = frequentDocView.getBranchNumberField();
+            if (bId.isEmpty())
+                readers = frequentDocDAO.getNFreqBorrowers(n);
+            else
+                readers = frequentDocDAO.getNFreqBorrowers(n, bId);
+            frequentDocView.displayReaderList(readers);
+        }catch (NumberFormatException e) {
+            MessageUtil.showErrorMessage("Please add a number",frequentDocView);
+        } catch (Exception e) {
+            MessageUtil.showErrorMessage("Something went wrong",frequentDocView);
         }
-        frequentDocView.showPanel("Branch Panel");
-        frequentDocView.displayBranchInfo(branches.toArray(new String[0]));
     }
 
-    private void logoutHandler() {
-        SessionManager.getInstance().setAdminId(null);
-        SessionManager.getInstance().setAdminPassword(null);
-        frequentDocView.dispose();
+    private void getNFrequentDocs() {
+        try {
+
+            int n = Integer.parseInt(frequentDocView.getNumberField());
+            List<DocumentDetail> docs = null;
+            String bId = frequentDocView.getBranchNumberField();
+            if (bId.isEmpty())
+                docs = frequentDocDAO.getNFreqBorrowedDocuments(n);
+            else
+                docs = frequentDocDAO.getNFreqBorrowedDocuments(n,bId);
+            frequentDocView.displayDocumentList(docs);
+            } catch (NumberFormatException e) {
+                MessageUtil.showErrorMessage("Please add a number",frequentDocView);
+            } catch (Exception e) {
+                MessageUtil.showErrorMessage("Something went wrong",frequentDocView);
+            }
+        }
     }
-}

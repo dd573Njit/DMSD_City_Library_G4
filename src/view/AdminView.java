@@ -37,7 +37,7 @@ public class AdminView extends JFrame {
     private JList<String> branchList;
     private JPanel dynamicBranchPanel;
 
-    JPanel cardPanel;
+    private JPanel cardPanel;
 
     public AdminView() {
         initializeUI();

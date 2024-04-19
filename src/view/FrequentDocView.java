@@ -1,171 +1,115 @@
 package view;
 
+import model.DocumentDetail;
+import model.Reader;
+
 import java.awt.*;
 import javax.swing.*;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class FrequentDocView extends JFrame {
-    // Top Panel
-    private JButton btnSearchDoc;
-    private JButton btnBranchInfo;
-    private JButton btnLogout;
-
-    // Document Panel
-    private JButton btnFreqBorrowers;
-    private JButton btnFreqBorrowedBooks;
-    private JButton btnAvgFinePaid;
-    private JTextField txtNumber;
-    private JTextField txtBranchId;
-    private JTextField txtBookPubYear;
-    private JTextField txtStartDate;
-    private JTextField txtEndDate;
-    private SimpleDateFormat dateFormat;
-    private JPanel documentPanel;
-
-    //Branch info panel
-    private JList<String> branchList;
-    private JPanel dynamicBranchPanel;
-
-    JPanel cardPanel;
-
+    private JTextField numberField;
+    private JTextField branchNumberField;
+    private JButton frequentBorrowersButton;
+    private JButton borrowedBooksButton;
+    private JList<Reader> readerList;
+    private JList<DocumentDetail> documentList;
+    private JPanel cardPanel;
 
     public FrequentDocView() {
         initializeUI();
     }
-
     private void initializeUI() {
-        setTitle("Frequent Docs View");
+        setTitle("Top Doc and Reader Viewer");
         setSize(800, 400);
         setLayout(new BorderLayout());
 
-        addTopPanel();
-        setupDocumentPanel();
-        setUpBranchPanel();
-    }
+        JPanel topPanel = new JPanel(new GridLayout(1, 2)); // Grid layout to divide into two columns
+        add(topPanel, BorderLayout.NORTH);
 
-    private void addTopPanel() {
-        JPanel topPanel = new JPanel(new FlowLayout());
-        btnBranchInfo = new JButton("Branch Info");
-        btnLogout = new JButton("Logout");
-        topPanel.add(btnBranchInfo);
-        topPanel.add(btnLogout);
+        // Setup the text field panel on the left
+        JPanel textFieldPanel = new JPanel(new GridLayout(2, 2));
+        topPanel.add(textFieldPanel);
 
-        JPanel northPanel = new JPanel();
-        northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.PAGE_AXIS));
-        northPanel.add(topPanel);
-        add(northPanel, BorderLayout.NORTH);
-    }
+        // Adding text fields and labels
+        JLabel numberLabel = new JLabel("Number:");
+        numberField = new JTextField();
+        JLabel branchNumberLabel = new JLabel("Branch Number:");
+        branchNumberField = new JTextField();
 
-    private void setupDocumentPanel() {
-        documentPanel = new JPanel();
-        documentPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        textFieldPanel.add(numberLabel);
+        textFieldPanel.add(numberField);
+        textFieldPanel.add(branchNumberLabel);
+        textFieldPanel.add(branchNumberField);
 
-        gbc.insets = new Insets(2, 2, 2, 2);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
+        // Setup the button panel on the right
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1)); // Grid layout to stack buttons vertically
+        topPanel.add(buttonPanel);
 
-        btnFreqBorrowers = new JButton("Frequent Borrowers");
-        btnFreqBorrowedBooks = new JButton("Frequently Borrowed Books");
-        btnAvgFinePaid = new JButton("AVG Fine Paid");
-        documentPanel.add(btnFreqBorrowers);
-        documentPanel.add(btnFreqBorrowedBooks);
-        documentPanel.add(btnAvgFinePaid);
-        txtNumber = new JTextField(5);
-        txtBranchId = new JTextField(10);
-        txtBookPubYear = new JTextField(4);
-        txtStartDate = new JTextField(10);
-        txtEndDate = new JTextField(10);
+        frequentBorrowersButton = new JButton("Frequent Borrowers");
+        borrowedBooksButton = new JButton("Borrowed Books");
+        buttonPanel.add(frequentBorrowersButton);
+        buttonPanel.add(borrowedBooksButton);
 
-        addLabelAndField(documentPanel, "Number:", txtNumber, 0, gbc);
-        addLabelAndField(documentPanel, "BranchID:", txtBranchId, 1, gbc);
-        addLabelAndField(documentPanel, "BookPubYear: :", txtBookPubYear, 2, gbc);
-        addLabelAndField(documentPanel, "StartDate:", txtStartDate, 3, gbc);
-        addLabelAndField(documentPanel, "EndDate:", txtEndDate, 4, gbc);
-        btnSearchDoc = new JButton("Search");
-        documentPanel.add(btnSearchDoc);
+        // Panel for the list
+        readerList = new JList<>();
+        documentList = new JList<>();
+        JPanel readerListPanel = new JPanel(new BorderLayout());
+        JScrollPane readerScrollPane = new JScrollPane(readerList);
+        readerListPanel.add(readerScrollPane, BorderLayout.CENTER);
 
-        add(documentPanel, BorderLayout.CENTER);
-    }
+        JPanel documentListPanel = new JPanel(new BorderLayout());
+        JScrollPane documentScrollPane = new JScrollPane(documentList);
+        documentListPanel.add(documentScrollPane, BorderLayout.CENTER);
 
-    private void setUpBranchPanel() {
-        branchList = new JList<>();
-        dynamicBranchPanel = new JPanel(new BorderLayout());
-        dynamicBranchPanel.add(new JScrollPane(branchList), BorderLayout.CENTER);
-        add(dynamicBranchPanel, BorderLayout.CENTER);
-    }
-
-    private void addLabelAndField(JPanel panel, String labelText, JTextField textField, int gridy, GridBagConstraints gbc) {
-        JLabel label = new JLabel(labelText);
-        gbc.gridx = 0;
-        gbc.gridy = gridy;
-        panel.add(label, gbc);
-
-        gbc.gridx = 1;
-        panel.add(textField, gbc);
-    }
-
-    private void setupPanelWithCardLayout() {
+        //setup card panel
         cardPanel = new JPanel(new CardLayout());
-        cardPanel.add(documentPanel, "Frequent Docs Panel");
-        cardPanel.add(dynamicBranchPanel, "Branch Panel");
-
-        // Add the card to panel to the Frame
+        setupCardLayout(readerListPanel,"Readers");
+        setupCardLayout(documentListPanel,"Documents");
         add(cardPanel, BorderLayout.CENTER);
     }
 
-    public JButton getBtnBranchInfo() {
-        return btnBranchInfo;
+    private void setupCardLayout(JPanel jPanel, String panelName) {
+        cardPanel.add(jPanel, panelName);
     }
 
-    public JButton getBtnLogout() {
-        return btnLogout;
-    }
-
-    public JButton getBtnFreqBorrowers() {
-        return btnFreqBorrowers;
-    }
-
-    public JButton getBtnFreqBorrowedBooks() {
-        return btnFreqBorrowedBooks;
-    }
-
-    public JButton getBtnAvgFinePaid() {
-        return btnAvgFinePaid;
-    }
-
-    public String getTxtNumber() {
-        return txtNumber.getText();
-    }
-
-    public String getTxtBranchId() {
-        return txtBranchId.getText();
-    }
-
-    public String getTxtBookPubYear() {
-        return txtBookPubYear.getText();
-    }
-
-    public String getStartDate() {
-        return txtStartDate.getText();
-    }
-
-    public String getEndDate() {
-        return txtEndDate.getText();
-    }
-
-    public JButton getBtnSearchDoc() {
-        return btnSearchDoc;
-    }
-
-    // Method in controller or somewhere to switch panels
-    public void showPanel(String cardName) {
+    private void showPanel(String cardName) {
         CardLayout cl = (CardLayout)(cardPanel.getLayout());
         cl.show(cardPanel, cardName);  // Switches to the given card by name
     }
 
-    public void displayBranchInfo(String[] branches) {
-        branchList.setListData(branches);
+    public JButton getBorrowedBooksButton() {
+        return borrowedBooksButton;
+    }
+
+    public JButton getFrequentBorrowersButton() {
+        return frequentBorrowersButton;
+    }
+
+    public String getBranchNumberField() {
+        return branchNumberField.getText();
+    }
+
+    public String getNumberField() {
+        return numberField.getText();
+    }
+
+    public void displayReaderList(List<Reader> readerList) {
+        DefaultListModel<Reader> model = new DefaultListModel<>();
+        for (Reader reader : readerList) {
+            model.addElement(reader);
+        }
+        this.readerList.setModel(model);
+        showPanel("Readers");
+    }
+
+    public void displayDocumentList(List<DocumentDetail> docList) {
+        DefaultListModel<DocumentDetail> model = new DefaultListModel<>();
+        for (DocumentDetail doc : docList) {
+            model.addElement(doc);
+        }
+        this.documentList.setModel(model);
+        showPanel("Documents");
     }
 }
