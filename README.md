@@ -49,7 +49,7 @@ Before setting up the project, ensure you have the following installed:
 
 ### Running the Application
 To run the City Library Management System, follow these steps:
-1. **Clone the Repository**: `git clone https://github.com/ShhRey/CS631-G4-CityLibrary`
+1. **Clone the Repository**: `git clone https://github.com/dd573Njit/DMSD_City_Library_G4`
 2. **Database Setup**:
     - Install MySQL and MySQL Workbench.
     - Execute the SQL commands provided in the directory to create and populate the database.
