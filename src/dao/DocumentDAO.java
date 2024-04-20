@@ -1,10 +1,13 @@
 package dao;
 import model.Document;
 import model.DocumentDetail;
+import model.ReturnableDocument;
+import util.CalendarUtil;
 import util.DatabaseConnection;
 import util.SessionManager;
 
 import java.sql.*;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +30,15 @@ public class DocumentDAO {
     public List<DocumentDetail> searchDocuments(String query) {
         List<DocumentDetail> results = new ArrayList<>();
 //        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID FROM DOCUMENTS d, COPIES c WHERE d.TITLE LIKE ? OR d.DOCID LIKE ? OR PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?) and d.DOCID = c.DOCID;";
-        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID FROM DOCUMENTS d JOIN COPIES c ON d.DOCID = c.DOCID LEFT JOIN BORROWS b ON b.DOCID = d.DOCID AND b.COPYNO = c.COPYNO AND b.BID = c.BID LEFT JOIN RESERVES r ON r.DOCID = d.DOCID AND r.COPYNO = c.COPYNO AND r.BID = c.BID WHERE (d.TITLE LIKE ? OR d.DOCID LIKE ? OR d.PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?)) AND b.BOR_NO IS NULL AND r.RESERVATION_NO IS NULL";
+        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID FROM DOCUMENTS d " +
+                "JOIN COPIES c ON d.DOCID = c.DOCID " +
+                "LEFT JOIN BORROWS b ON b.DOCID = d.DOCID " +
+                "AND b.COPYNO = c.COPYNO AND b.BID = c.BID " +
+                "LEFT JOIN RESERVES r ON r.DOCID = d.DOCID " +
+                "AND r.COPYNO = c.COPYNO AND r.BID = c.BID " +
+                "WHERE (d.TITLE LIKE ? OR d.DOCID LIKE ? " +
+                "OR d.PUBLISHERID IN (SELECT PUBLISHERID FROM PUBLISHERS WHERE PUBNAME LIKE ?)) " +
+                "AND b.BOR_NO IS NULL AND r.RESERVATION_NO IS NULL";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, "%" + query + "%");
@@ -46,15 +57,21 @@ public class DocumentDAO {
     }
 
 
-    public List<DocumentDetail> getReturnableDocuments() {
-        List<DocumentDetail> results = new ArrayList<>();
-        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID from DOCUMENTS d JOIN COPIES c on d.DOCID = c.DOCID JOIN BORROWS b on d.DOCID = b.DOCID where b.RID = ?;";  // Adjust the SQL based on your schema
+    public List<ReturnableDocument> getReturnableDocuments() {
+        List<ReturnableDocument> results = new ArrayList<>();
+        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, bg.BDTIME from DOCUMENTS d " +
+                "JOIN COPIES c on d.DOCID = c.DOCID " +
+                "JOIN BORROWS b on d.DOCID = b.DOCID " +
+                "JOIN BORROWING bg on bg.BOR_NO = b.BOR_NO " +
+                "where b.RID = ?;";  // Adjust the SQL based on your schema
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, SessionManager.getInstance().getCurrentReaderCardNumber());
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    results.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
+                    Date date = rs.getDate("BDTIME");
+                    Date returnDate = CalendarUtil.get20DaysAfterDate(date);
+                    results.add(new ReturnableDocument(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), date,returnDate));
                 }
             }
         } catch (SQLException e) {
