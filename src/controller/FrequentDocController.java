@@ -30,6 +30,7 @@ public class FrequentDocController {
     public void attachHandlers() {
         frequentDocView.getFrequentBorrowersButton().addActionListener(e -> getNFrequentBorrowers());
         frequentDocView.getBorrowedBooksButton().addActionListener(e -> getNFrequentDocs());
+        frequentDocView.getPopularBooksButton().addActionListener(e -> getPopularBooks());
     }
 
     private void getNFrequentBorrowers() {
@@ -66,4 +67,9 @@ public class FrequentDocController {
                 MessageUtil.showErrorMessage("Something went wrong",frequentDocView);
             }
         }
+
+    private void getPopularBooks() {
+        List<DocumentDetail> docs = frequentDocDAO.getNPopularBooks(frequentDocView.getYear());
+        frequentDocView.displayDocumentList(docs);
     }
+}
