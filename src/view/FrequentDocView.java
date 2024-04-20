@@ -1,11 +1,12 @@
 package view;
 
+import com.toedter.calendar.JDateChooser;
 import model.DocumentDetail;
 import model.Reader;
 
-import java.awt.*;
 import javax.swing.*;
-import java.text.SimpleDateFormat;
+import java.awt.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,10 +16,13 @@ public class FrequentDocView extends JFrame {
     private JButton frequentBorrowersButton;
     private JButton borrowedBooksButton;
     private JButton btnPopularBooks;
+    private JButton btnBranchAvgFine;
     private JList<Reader> readerList;
     private JList<DocumentDetail> documentList;
     private JPanel cardPanel;
     private JComboBox<Integer> yearComboBox;
+    private JDateChooser startDateChooser;
+    private JDateChooser endDateChooser;
 
     public FrequentDocView() {
         initializeUI();
@@ -29,7 +33,6 @@ public class FrequentDocView extends JFrame {
         setSize(800, 400);
         setLayout(new BorderLayout());
 
-        // Main top panel divided into two sub-panels
         JPanel topPanel = new JPanel(new GridLayout(1, 2)); // Grid layout to divide into two columns
         add(topPanel, BorderLayout.NORTH);
 
@@ -38,7 +41,6 @@ public class FrequentDocView extends JFrame {
         textFieldPanel.setLayout(new BoxLayout(textFieldPanel, BoxLayout.PAGE_AXIS));
         topPanel.add(textFieldPanel);
 
-        // Adding text fields and labels
         JLabel numberLabel = new JLabel("Number:");
         numberField = new JTextField();
         textFieldPanel.add(numberLabel);
@@ -51,9 +53,19 @@ public class FrequentDocView extends JFrame {
 
         JLabel yearLabel = new JLabel("Year:");
         yearComboBox = new JComboBox<>();
-        populateYearComboBox(1990, 2050);  // Populate with example years
+        populateYearComboBox(1990, 2050);
         textFieldPanel.add(yearLabel);
         textFieldPanel.add(yearComboBox);
+
+        JPanel dateChooserPanel = new JPanel();
+        dateChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        startDateChooser = new JDateChooser();
+        endDateChooser = new JDateChooser();
+        dateChooserPanel.add(new JLabel("Start Date:"));
+        dateChooserPanel.add(startDateChooser);
+        dateChooserPanel.add(new JLabel("End Date:"));
+        dateChooserPanel.add(endDateChooser);
+        textFieldPanel.add(dateChooserPanel);
 
         // Setup the button panel on the right with BoxLayout for vertical alignment
         JPanel buttonPanel = new JPanel();
@@ -61,16 +73,19 @@ public class FrequentDocView extends JFrame {
         topPanel.add(buttonPanel);
 
         frequentBorrowersButton = new JButton("Frequent Borrowers");
-        buttonPanel.add(frequentBorrowersButton);
         borrowedBooksButton = new JButton("Borrowed Books");
-        buttonPanel.add(borrowedBooksButton);
         btnPopularBooks = new JButton("Popular Books");
-        buttonPanel.add(btnPopularBooks);
+        btnBranchAvgFine = new JButton("Branch Average Fine");
 
-        // Adjust spacing and alignment in the button panel
+        buttonPanel.add(frequentBorrowersButton);
+        buttonPanel.add(borrowedBooksButton);
+        buttonPanel.add(btnPopularBooks);
+        buttonPanel.add(btnBranchAvgFine);
+
         frequentBorrowersButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         borrowedBooksButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnPopularBooks.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnBranchAvgFine.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Panel for the list
         readerList = new JList<>();
@@ -83,7 +98,6 @@ public class FrequentDocView extends JFrame {
         JScrollPane documentScrollPane = new JScrollPane(documentList);
         documentListPanel.add(documentScrollPane, BorderLayout.CENTER);
 
-        //setup card panel
         cardPanel = new JPanel(new CardLayout());
         setupCardLayout(readerListPanel, "Readers");
         setupCardLayout(documentListPanel, "Documents");
@@ -101,7 +115,7 @@ public class FrequentDocView extends JFrame {
     }
 
     private void showPanel(String cardName) {
-        CardLayout cl = (CardLayout) (cardPanel.getLayout());
+        CardLayout cl = (CardLayout)(cardPanel.getLayout());
         cl.show(cardPanel, cardName);  // Switches to the given card by name
     }
 
@@ -115,6 +129,10 @@ public class FrequentDocView extends JFrame {
 
     public JButton getPopularBooksButton() {
         return btnPopularBooks;
+    }
+
+    public JButton getBranchAvgFineButton() {
+        return btnBranchAvgFine;
     }
 
     public String getNumberField() {
@@ -155,5 +173,13 @@ public class FrequentDocView extends JFrame {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public Date getStartDate() {
+        return startDateChooser.getDate();
+    }
+
+    public Date getEndDate() {
+        return endDateChooser.getDate();
     }
 }

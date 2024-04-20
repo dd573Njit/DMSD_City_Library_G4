@@ -140,17 +140,28 @@ public class FrequentDocDAO {
         return documents;
     }
 
-    public List<Reader> getAvgFinePaid(String stdDate, String endDate) {
-        List<Reader> readers = new ArrayList<>();
-        String sql = "SELECT br.BID, br.LNAME, AVG(bow.FINE) AS AVGUSERFINE FROM BORROWS bo JOIN BORROWING bow JOIN BRANCH br ON bo.BID = br.BID AND bow.BOR_NO = bo.BOR_NO WHERE bow.BDTIME BETWEEN ? AND ? GROUP BY br.BID, br.LNAME ORDER BY AVGUSERFINE DESC";
+    public List<BranchFineInfo> getAvgFinePaid(String stdDate, String endDate) {
+        List<BranchFineInfo> branchFineInfoList = new ArrayList<>();
+        String sql = "SELECT b.BID, b.LNAME, AVG(bg.FINE) AS average_fine\n" +
+                "FROM BRANCHES b\n" +
+                "JOIN BORROWS br ON b.BID = br.BID\n" +
+                "JOIN BORROWING bg On bg.BOR_NO = br.BOR_NO\n" +
+                "WHERE bg.borrow_date >= ? AND bg.return_date <= ?\n" +
+                "GROUP BY b.BID, b.LNAME, average_fine\n" +
+                "ORDER BY average_fine,b.BID,b.LNAME;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDate(1, Date.valueOf(stdDate));
             pstmt.setDate(2, Date.valueOf(endDate));
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    branchFineInfoList.add(new BranchFineInfo(rs.getString("BID"), rs.getString("LNAME"), rs.getDouble("average_fine")));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during database query: " + e.getMessage());
+            e.printStackTrace();
         }
-        catch (SQLException e) {
-            System.err.println("Error accessing database: " + e.getMessage());
-        }
-        return readers;
+        return branchFineInfoList;
     }
 }

@@ -13,14 +13,14 @@ public class ReaderController {
     private final ListDocumentController listDocumentController;
     private final ReturnDocumentsController returnDocumentsController;
     private final DocumentDAO documentDAO;
-    private final List<DocumentDetail> documents;
+    //private final List<DocumentDetail> documents;
 
     public ReaderController() {
         readerView = new ReaderView();
         documentDAO = new DocumentDAO();
         listDocumentController = new ListDocumentController();
         returnDocumentsController = new ReturnDocumentsController();
-        documents = documentDAO.getReturnableDocuments();
+        //documents = documentDAO.getReturnableDocuments();
         attachHandlers();
     }
 
@@ -44,11 +44,11 @@ public class ReaderController {
     }
 
     private void showReturnableDocuments() {
-        returnDocumentsController.showReturnDocuments(documents);
+        returnDocumentsController.showReturnDocuments();
     }
 
     private void openListDocument() {
-        listDocumentController.showListDocument(documents);
+        //listDocumentController.showListDocument(documents);
     }
 
     private void logoutHandler() {
