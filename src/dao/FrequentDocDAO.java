@@ -114,17 +114,30 @@ public class FrequentDocDAO {
         return documentDetails;
     }
 
-    public List<Document> getNPopularBooks(String query) {
-        List<Document> books = new ArrayList<>();
-        String sql = "SELECT TOP(10) b.DOCID, d.TITLE, COUNT(*) AS TOTBORROWCOUNT FROM BORROWS b JOIN DOCUMENTS d ON b.DOCID = d.DOCID WHERE YEAR(d.PDATE) LIKE ? GROUP BY b.DOCID, d.TITLE ORDER BY TOTBORROWCOUNT DESC";
+    public List<DocumentDetail> getNPopularBooks(int year) {
+        List<DocumentDetail> documents = new ArrayList<>();
+        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID, COUNT(b.BOR_NO) AS BorrowCount\n" +
+                "FROM DOCUMENTS d\n" +
+                "JOIN COPIES c ON c.DOCID = d.DOCID\n" +
+                "JOIN BORROWS b ON d.DOCID = b.DOCID\n" +
+                "JOIN BORROWING bg ON bg.BOR_NO = b.BOR_NO\n" +
+                "WHERE YEAR(bg.BDTIME) = ?\n" +
+                "GROUP BY d.DOCID, d.TITLE, c.COPYNO, c.BID\n" +
+                "ORDER BY BorrowCount DESC\n" +
+                "LIMIT 10;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, "%" + query + "%");
+            pstmt.setInt(1, year);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    documents.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during database query: " + e.getMessage());
+            e.printStackTrace();
         }
-        catch (SQLException e) {
-            System.err.println("Error accessing database: " + e.getMessage());
-        }
-        return books;
+        return documents;
     }
 
     public List<Reader> getAvgFinePaid(String stdDate, String endDate) {

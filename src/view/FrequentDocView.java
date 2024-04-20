@@ -14,44 +14,63 @@ public class FrequentDocView extends JFrame {
     private JComboBox<String> branchNumberComboBox;
     private JButton frequentBorrowersButton;
     private JButton borrowedBooksButton;
+    private JButton btnPopularBooks;
     private JList<Reader> readerList;
     private JList<DocumentDetail> documentList;
     private JPanel cardPanel;
+    private JComboBox<Integer> yearComboBox;
 
     public FrequentDocView() {
         initializeUI();
     }
+
     private void initializeUI() {
         setTitle("Top Doc and Reader Viewer");
         setSize(800, 400);
         setLayout(new BorderLayout());
 
+        // Main top panel divided into two sub-panels
         JPanel topPanel = new JPanel(new GridLayout(1, 2)); // Grid layout to divide into two columns
         add(topPanel, BorderLayout.NORTH);
 
-        // Setup the text field panel on the left
-        JPanel textFieldPanel = new JPanel(new GridLayout(2, 2));
+        // Setup the text field panel on the left with BoxLayout for vertical alignment
+        JPanel textFieldPanel = new JPanel();
+        textFieldPanel.setLayout(new BoxLayout(textFieldPanel, BoxLayout.PAGE_AXIS));
         topPanel.add(textFieldPanel);
 
         // Adding text fields and labels
         JLabel numberLabel = new JLabel("Number:");
         numberField = new JTextField();
-        JLabel branchNumberLabel = new JLabel("Branch Number:");
-        branchNumberComboBox = new JComboBox<>();
-
         textFieldPanel.add(numberLabel);
         textFieldPanel.add(numberField);
+
+        JLabel branchNumberLabel = new JLabel("Branch Number:");
+        branchNumberComboBox = new JComboBox<>();
         textFieldPanel.add(branchNumberLabel);
         textFieldPanel.add(branchNumberComboBox);
 
-        // Setup the button panel on the right
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 1)); // Grid layout to stack buttons vertically
+        JLabel yearLabel = new JLabel("Year:");
+        yearComboBox = new JComboBox<>();
+        populateYearComboBox(1990, 2050);  // Populate with example years
+        textFieldPanel.add(yearLabel);
+        textFieldPanel.add(yearComboBox);
+
+        // Setup the button panel on the right with BoxLayout for vertical alignment
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
         topPanel.add(buttonPanel);
 
         frequentBorrowersButton = new JButton("Frequent Borrowers");
-        borrowedBooksButton = new JButton("Borrowed Books");
         buttonPanel.add(frequentBorrowersButton);
+        borrowedBooksButton = new JButton("Borrowed Books");
         buttonPanel.add(borrowedBooksButton);
+        btnPopularBooks = new JButton("Popular Books");
+        buttonPanel.add(btnPopularBooks);
+
+        // Adjust spacing and alignment in the button panel
+        frequentBorrowersButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        borrowedBooksButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnPopularBooks.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Panel for the list
         readerList = new JList<>();
@@ -66,9 +85,15 @@ public class FrequentDocView extends JFrame {
 
         //setup card panel
         cardPanel = new JPanel(new CardLayout());
-        setupCardLayout(readerListPanel,"Readers");
-        setupCardLayout(documentListPanel,"Documents");
+        setupCardLayout(readerListPanel, "Readers");
+        setupCardLayout(documentListPanel, "Documents");
         add(cardPanel, BorderLayout.CENTER);
+    }
+
+    private void populateYearComboBox(int startYear, int endYear) {
+        for (int i = startYear; i <= endYear; i++) {
+            yearComboBox.addItem(i);
+        }
     }
 
     private void setupCardLayout(JPanel jPanel, String panelName) {
@@ -76,7 +101,7 @@ public class FrequentDocView extends JFrame {
     }
 
     private void showPanel(String cardName) {
-        CardLayout cl = (CardLayout)(cardPanel.getLayout());
+        CardLayout cl = (CardLayout) (cardPanel.getLayout());
         cl.show(cardPanel, cardName);  // Switches to the given card by name
     }
 
@@ -86,6 +111,10 @@ public class FrequentDocView extends JFrame {
 
     public JButton getFrequentBorrowersButton() {
         return frequentBorrowersButton;
+    }
+
+    public JButton getPopularBooksButton() {
+        return btnPopularBooks;
     }
 
     public String getNumberField() {
@@ -117,6 +146,14 @@ public class FrequentDocView extends JFrame {
     public void populateBranchNumbers(List<String> branchNumbers) {
         for (String number : branchNumbers) {
             branchNumberComboBox.addItem(number);
+        }
+    }
+
+    public int getYear() {
+        try {
+            return (int) (Integer) yearComboBox.getSelectedItem();
+        } catch (Exception e) {
+            return 0;
         }
     }
 }
