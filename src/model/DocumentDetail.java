@@ -31,6 +31,6 @@ public class DocumentDetail {
 
     @Override
     public String toString() {
-        return title + copyNo;  // This will be used by JList for display
+        return "DOCID: " + docId + "\t\t TITLE: " + title + "\t\t COPY NUMBER: " + copyNo;  // This will be used by JList for display
     }
 }

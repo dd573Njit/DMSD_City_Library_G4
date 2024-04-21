@@ -92,5 +92,51 @@ public class DocumentDAO {
             pstmt.executeUpdate();
         }
     }
+
+    public List<DocumentDetail> getDocumentsForPublisher(String pubName) throws SQLException {
+        List<DocumentDetail> results = new ArrayList<>();
+        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, c.BID\n" +
+                "FROM DOCUMENTS d\n" +
+                "JOIN COPIES c ON c.DOCID = d.DOCID\n" +
+                "JOIN PUBLISHERS p ON p.PUBLISHERID = d.PUBLISHERID\n" +
+                "AND p.PUBNAME = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, pubName);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    results.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during database query: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    public List<DocumentDetail> getReservedDocuments(String rId) throws SQLException {
+        List<DocumentDetail> results = new ArrayList<>();
+        String sql = "SELECT DISTINCT d.DOCID, d.TITLE, c.COPYNO, c.BID\n" +
+                "from DOCUMENTS d\n" +
+                "JOIN COPIES c ON c.DOCID = d.DOCID\n" +
+                "JOIN RESERVES r ON r.DOCID = c.DOCID\n" +
+                "WHERE r.RID = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, rId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    results.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during database query: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return results;
+    }
 }
 

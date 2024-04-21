@@ -1,21 +1,24 @@
 package view;
-import model.Document;
 import model.DocumentDetail;
+import model.Publisher;
 import util.ToggleSelectionModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 public class ReaderView extends JFrame {
     private JTextField searchText;
     private JButton btnReserveDocument;
     private JButton btnReturnDocument;
     private JButton btnCheckoutDocument;
-    private JButton btnListDocument;
+    private JButton btnListReservedDocuments;
     private JButton btnLogout;
     private JButton btnSearch;
+    private JButton btnPrintDocuments;
     private JList<DocumentDetail> documentList;
+    private JComboBox<String> cbPublisherNames;
 
     public ReaderView() {
         initializeUI();
@@ -31,13 +34,13 @@ public class ReaderView extends JFrame {
         btnReserveDocument = new JButton("Reserve Document");
         btnReturnDocument = new JButton("Return Document");
         btnCheckoutDocument = new JButton("Checkout Document");
-        btnListDocument = new JButton("List Document");
+        btnListReservedDocuments = new JButton("List Reserved Documents");
         btnLogout = new JButton("Logout");
 
         topPanel.add(btnReserveDocument);
         topPanel.add(btnReturnDocument);
         topPanel.add(btnCheckoutDocument);
-        topPanel.add(btnListDocument);
+        topPanel.add(btnListReservedDocuments);
         topPanel.add(btnLogout);
 
         // Search panel setup
@@ -57,11 +60,24 @@ public class ReaderView extends JFrame {
         searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         searchPanel.add(btnSearch);
 
-        // Container panel that includes both the top panel and search panel
+        // Publisher panel setup
+        JPanel publisherPanel = new JPanel();
+        publisherPanel.setLayout(new BoxLayout(publisherPanel, BoxLayout.LINE_AXIS));
+        publisherPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        cbPublisherNames = new JComboBox<>();
+        btnPrintDocuments = new JButton("Print Documents");
+
+        publisherPanel.add(cbPublisherNames);
+        publisherPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        publisherPanel.add(btnPrintDocuments);
+
+        // Container panel that includes both the top panel and search panels
         JPanel northPanel = new JPanel();
         northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.PAGE_AXIS));
         northPanel.add(topPanel);
         northPanel.add(searchPanel);
+        northPanel.add(publisherPanel); // Add the publisher panel below the search panel
 
         add(northPanel, BorderLayout.NORTH);
 
@@ -86,8 +102,8 @@ public class ReaderView extends JFrame {
         return btnCheckoutDocument;
     }
 
-    public JButton getBtnListDocument() {
-        return btnListDocument;
+    public JButton getBtnListReservedDocuments() {
+        return btnListReservedDocuments;
     }
 
     public JButton getBtnLogout() {
@@ -96,6 +112,10 @@ public class ReaderView extends JFrame {
 
     public JButton getBtnSearch() {
         return btnSearch;
+    }
+
+    public JButton getBtnPrintDocuments() {
+        return btnPrintDocuments;
     }
 
     public JTextField getSearchText() {
@@ -112,5 +132,15 @@ public class ReaderView extends JFrame {
 
     public List<DocumentDetail> getSelectedDocuments() {
         return documentList.getSelectedValuesList();
+    }
+
+    public String getPublisherName() {
+        return Objects.requireNonNull(cbPublisherNames.getSelectedItem()).toString();
+    }
+
+    public void populatePublisher(List<Publisher> publishers) {
+        for (Publisher publisher : publishers) {
+            cbPublisherNames.addItem(publisher.getPubName());
+        }
     }
 }

@@ -1,6 +1,9 @@
 package controller;
 
+import dao.DocumentDAO;
 import model.DocumentDetail;
+import util.MessageUtil;
+import util.SessionManager;
 import view.ListDocumentView;
 
 import java.util.List;
@@ -21,8 +24,14 @@ public class ListDocumentController {
         listDocumentView.dispose();
     }
 
-    public void showListDocument(List<DocumentDetail> documents) {
+    public void showListDocument() {
         listDocumentView.setVisible(true);
-        listDocumentView.displayDocuments(documents);
+        String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
+        try {
+            List<DocumentDetail> documents = new DocumentDAO().getReservedDocuments(rId);
+            listDocumentView.displayDocuments(documents);
+        } catch (Exception e) {
+            MessageUtil.showErrorMessage(e.getMessage(),listDocumentView);
+        }
     }
 }

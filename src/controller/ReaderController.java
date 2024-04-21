@@ -1,41 +1,41 @@
 package controller;
 
 import dao.DocumentDAO;
+import dao.PublisherDAO;
 import model.DocumentDetail;
 import util.MessageUtil;
 import util.SessionManager;
 import view.ReaderView;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ReaderController {
     private final ReaderView readerView;
-    private final ListDocumentController listDocumentController;
     private final ReturnDocumentsController returnDocumentsController;
     private final DocumentDAO documentDAO;
-    //private final List<DocumentDetail> documents;
 
     public ReaderController() {
         readerView = new ReaderView();
         documentDAO = new DocumentDAO();
-        listDocumentController = new ListDocumentController();
         returnDocumentsController = new ReturnDocumentsController();
-        //documents = documentDAO.getReturnableDocuments();
         attachHandlers();
     }
 
     public void showReaderView() {
         readerView.setVisible(true);
+        populatePublishers();
     }
 
     private void attachHandlers() {
         readerView.getBtnReserveDocument().addActionListener(e -> showReserveDocument());
         readerView.getBtnCheckoutDocument().addActionListener(e -> showCheckoutDocument());
         readerView.getBtnReturnDocument().addActionListener(e -> showReturnableDocuments());
-        readerView.getBtnListDocument().addActionListener(e -> openListDocument());
+        readerView.getBtnListReservedDocuments().addActionListener(e -> openListDocument());
         readerView.getBtnLogout().addActionListener(e -> logoutHandler());
         readerView.getSearchText().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
         readerView.getBtnSearch().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
+        readerView.getBtnPrintDocuments().addActionListener(e -> showDocumentForPublisher());
     }
 
     private void performSearch(String query) {
@@ -48,7 +48,7 @@ public class ReaderController {
     }
 
     private void openListDocument() {
-        //listDocumentController.showListDocument(documents);
+        new ListDocumentController().showListDocument();
     }
 
     private void logoutHandler() {
@@ -72,5 +72,25 @@ public class ReaderController {
             return;
         }
         new CheckoutController().showCheckoutView(documents);
+    }
+
+    private void showDocumentForPublisher() {
+        String pubName = readerView.getPublisherName();
+        List<DocumentDetail> documents = null;
+        try {
+            documents = documentDAO.getDocumentsForPublisher(pubName);
+            readerView.displayDocuments(documents);
+        } catch (Exception e) {
+            MessageUtil.showErrorMessage(e.getMessage(),readerView);
+        }
+    }
+
+    private void populatePublishers() {
+        try {
+            readerView.populatePublisher(new PublisherDAO().getAllPublishers());
+        }
+        catch (SQLException e) {
+            MessageUtil.showErrorMessage(e.getMessage(),readerView);
+        }
     }
 }

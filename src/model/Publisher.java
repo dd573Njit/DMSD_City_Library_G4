@@ -22,4 +22,9 @@ public class Publisher {
     public String getPublisherId() {
         return publisherId;
     }
+
+    @Override
+    public String toString() {
+        return pubName;
+    }
 }
