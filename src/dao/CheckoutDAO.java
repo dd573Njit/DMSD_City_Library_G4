@@ -29,12 +29,11 @@ public class CheckoutDAO {
     }
 
     public void addBorrowingDate(Borrowing borrowing) throws SQLException {
-        String sql = "INSERT INTO BORROWING (BOR_NO, BDTIME,RDTIME) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO BORROWING (BOR_NO, BDTIME,RDTIME) VALUES (?, ?, null)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, borrowing.getBorNo());
             pstmt.setTimestamp(2, new Timestamp(borrowing.getBDTime().getTime()));
-            pstmt.setTimestamp(3, new Timestamp(borrowing.getRDTime().getTime()));
             pstmt.executeUpdate();
         }
     }

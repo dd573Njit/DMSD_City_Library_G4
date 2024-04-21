@@ -1,10 +1,11 @@
 package view;
 
-import model.DocumentDetail;
 import model.ReturnableDocument;
+import util.ToggleSelectionModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReturnDocumentsView extends JFrame{
@@ -69,5 +70,14 @@ public class ReturnDocumentsView extends JFrame{
 
     public void setStatusMessage(String message) {
         statusLabel.setText(message);
+    }
+
+    public List<ReturnableDocument> getAllDocuments() {
+        ListModel<ReturnableDocument> model = documentList.getModel();
+        List<ReturnableDocument> documents = new ArrayList<>();
+        for (int i = 0; i < model.getSize(); i++) {
+            documents.add(model.getElementAt(i));
+        }
+        return documents;
     }
 }
