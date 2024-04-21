@@ -2,7 +2,6 @@ package dao;
 
 import model.*;
 import util.DatabaseConnection;
-import util.SessionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -140,19 +139,20 @@ public class FrequentDocDAO {
         return documents;
     }
 
-    public List<BranchFineInfo> getAvgFinePaid(String stdDate, String endDate) {
+    public List<BranchFineInfo> getAvgFinePaid(Date startDate, Date endDate) {
         List<BranchFineInfo> branchFineInfoList = new ArrayList<>();
         String sql = "SELECT b.BID, b.LNAME, AVG(bg.FINE) AS average_fine\n" +
                 "FROM BRANCHES b\n" +
                 "JOIN BORROWS br ON b.BID = br.BID\n" +
                 "JOIN BORROWING bg On bg.BOR_NO = br.BOR_NO\n" +
-                "WHERE bg.borrow_date >= ? AND bg.return_date <= ?\n" +
-                "GROUP BY b.BID, b.LNAME, average_fine\n" +
+                "WHERE bg.BDTIME >= ? AND bg.RDTIME <= ?\n" +
+                "GROUP BY b.BID, b.LNAME\n" +
                 "ORDER BY average_fine,b.BID,b.LNAME;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, Date.valueOf(stdDate));
-            pstmt.setDate(2, Date.valueOf(endDate));
+            pstmt.setDate(1, startDate);
+            pstmt.setDate(2, endDate);
+            System.out.println(pstmt);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     branchFineInfoList.add(new BranchFineInfo(rs.getString("BID"), rs.getString("LNAME"), rs.getDouble("average_fine")));

@@ -22,4 +22,9 @@ public class BranchFineInfo {
     public String getLName() {
         return lName;
     }
+
+    @Override
+    public String toString() {
+        return "BranchId: " + bId + "\t\t Branch Name: " + lName + "\t\t Avg fine: " + avg_fine;
+    }
 }
