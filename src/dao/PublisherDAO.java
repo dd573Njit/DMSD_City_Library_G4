@@ -5,7 +5,10 @@ import util.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PublisherDAO {
 
@@ -18,5 +21,20 @@ public class PublisherDAO {
             pstmt.setString(3, publisher.getAddress());
             pstmt.executeUpdate();
         }
+    }
+
+    public List<Publisher> getAllPublishers() throws SQLException {
+        List<Publisher> publishers = new ArrayList<>();
+        String sql = "SELECT * FROM PUBLISHERS";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                publishers.add(new Publisher(rs.getString("PUBLISHERID"), rs.getString("PUBNAME"), rs.getString("ADDRESS")));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error accessing database: " + e.getMessage());
+        }
+        return publishers;
     }
 }

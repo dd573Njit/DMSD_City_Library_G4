@@ -29,7 +29,7 @@ public class ReturnDocumentsController {
         Date currentDate = new Date();
         long totalDays = 0;
         for (ReturnableDocument returnableDocument : documents) {
-            Date returnDate = returnableDocument.getBDTime();
+            Date returnDate = returnableDocument.getRDTime();
             if (currentDate.after(returnDate)) {
                 long diffInMillis = currentDate.getTime() - returnDate.getTime();
                 long days = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
