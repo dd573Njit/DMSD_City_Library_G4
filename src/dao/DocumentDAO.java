@@ -63,7 +63,7 @@ public class DocumentDAO {
                 "JOIN COPIES c on d.DOCID = c.DOCID " +
                 "JOIN BORROWS b on d.DOCID = b.DOCID " +
                 "JOIN BORROWING bg on bg.BOR_NO = b.BOR_NO " +
-                "where b.RID = ?;";  // Adjust the SQL based on your schema
+                "WHERE b.RID = ? AND bg.RDTIME IS null;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, SessionManager.getInstance().getCurrentReaderCardNumber());
