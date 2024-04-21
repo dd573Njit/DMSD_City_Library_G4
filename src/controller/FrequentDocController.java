@@ -3,14 +3,8 @@ package controller;
 import dao.*;
 import model.*;
 import util.MessageUtil;
-import util.SessionManager;
-import view.AdminView;
 import view.FrequentDocView;
-
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 public class FrequentDocController {
@@ -31,6 +25,7 @@ public class FrequentDocController {
         frequentDocView.getFrequentBorrowersButton().addActionListener(e -> getNFrequentBorrowers());
         frequentDocView.getBorrowedBooksButton().addActionListener(e -> getNFrequentDocs());
         frequentDocView.getPopularBooksButton().addActionListener(e -> getPopularBooks());
+        frequentDocView.getBranchAvgFineButton().addActionListener(e -> showBranchFineInfoList());
     }
 
     private void getNFrequentBorrowers() {
@@ -71,5 +66,16 @@ public class FrequentDocController {
     private void getPopularBooks() {
         List<DocumentDetail> docs = frequentDocDAO.getNPopularBooks(frequentDocView.getYear());
         frequentDocView.displayDocumentList(docs);
+    }
+
+    private void showBranchFineInfoList() {
+        try {
+            Date startDate = new Date(frequentDocView.getStartDate().getTime());
+            Date endDate = new Date(frequentDocView.getEndDate().getTime());
+            List<BranchFineInfo> branchFineInfoList = frequentDocDAO.getAvgFinePaid(startDate, endDate);
+            frequentDocView.displayBranchFineInfoList(branchFineInfoList);
+        } catch(Exception e) {
+            MessageUtil.showErrorMessage("Start date or end date is not selected",frequentDocView);
+        }
     }
 }

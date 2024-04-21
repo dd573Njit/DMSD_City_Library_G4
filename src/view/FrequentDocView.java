@@ -1,6 +1,7 @@
 package view;
 
 import com.toedter.calendar.JDateChooser;
+import model.BranchFineInfo;
 import model.DocumentDetail;
 import model.Reader;
 
@@ -19,6 +20,7 @@ public class FrequentDocView extends JFrame {
     private JButton btnBranchAvgFine;
     private JList<Reader> readerList;
     private JList<DocumentDetail> documentList;
+    private JList<BranchFineInfo> branchFineInfoList;
     private JPanel cardPanel;
     private JComboBox<Integer> yearComboBox;
     private JDateChooser startDateChooser;
@@ -90,6 +92,7 @@ public class FrequentDocView extends JFrame {
         // Panel for the list
         readerList = new JList<>();
         documentList = new JList<>();
+        branchFineInfoList = new JList<>();
         JPanel readerListPanel = new JPanel(new BorderLayout());
         JScrollPane readerScrollPane = new JScrollPane(readerList);
         readerListPanel.add(readerScrollPane, BorderLayout.CENTER);
@@ -98,9 +101,14 @@ public class FrequentDocView extends JFrame {
         JScrollPane documentScrollPane = new JScrollPane(documentList);
         documentListPanel.add(documentScrollPane, BorderLayout.CENTER);
 
+        JPanel branchFineInfoListPanel = new JPanel(new BorderLayout());
+        JScrollPane branchFineInfoScrollPane = new JScrollPane(branchFineInfoList);
+        branchFineInfoListPanel.add(branchFineInfoScrollPane, BorderLayout.CENTER);
+
         cardPanel = new JPanel(new CardLayout());
         setupCardLayout(readerListPanel, "Readers");
         setupCardLayout(documentListPanel, "Documents");
+        setupCardLayout(branchFineInfoListPanel, "Branch Fine");
         add(cardPanel, BorderLayout.CENTER);
     }
 
@@ -155,6 +163,15 @@ public class FrequentDocView extends JFrame {
         }
         this.documentList.setModel(model);
         showPanel("Documents");
+    }
+
+    public void displayBranchFineInfoList(List<BranchFineInfo> branchFineInfoList) {
+        DefaultListModel<BranchFineInfo> model = new DefaultListModel<>();
+        for (BranchFineInfo bf : branchFineInfoList) {
+            model.addElement(bf);
+        }
+        this.branchFineInfoList.setModel(model);
+        showPanel("Branch Fine");
     }
 
     public String getSelectedBranchNumber() {
