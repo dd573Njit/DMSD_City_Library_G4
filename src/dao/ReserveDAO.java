@@ -70,4 +70,17 @@ public class ReserveDAO {
         return documents;
     }
 
+    public void removeReservedDocs(String rId) throws SQLException {
+        String sql = "DELETE FROM RESERVES WHERE RID = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, rId);
+            int affectedRows = pstmt.executeUpdate();
+            System.out.println("Deleted " + affectedRows + " rows.");
+        } catch (SQLException e) {
+            System.err.println("Error deleting reserved documents: " + e.getMessage());
+            throw e;
+        }
+    }
+
 }

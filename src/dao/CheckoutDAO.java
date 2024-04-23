@@ -2,18 +2,20 @@ package dao;
 
 import model.Borrowing;
 import model.Borrows;
+import model.DocumentDetail;
 import util.DatabaseConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckoutDAO {
-    public int getBorrowingCountForAReader(String query) {
-        String sql = "SELECT COUNT(*) AS count FROM BORROWS WHERE RID = ?";
+    public int getBorrowingCount() {
+        String sql = "SELECT COUNT(*) AS count FROM BORROWING";
         int count = 0;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, "%" + query + "%");
             ResultSet rs = pstmt.executeQuery(); {
 
                 if (rs.next()) {
@@ -49,5 +51,22 @@ public class CheckoutDAO {
             pstmt.setString(5, borrows.getRId());
             pstmt.executeUpdate();
         }
+    }
+
+    public List<DocumentDetail> getBorrowedDocId(String rId) throws SQLException {
+        String sql = "SELECT d.DOCID, d.TITLE, r.COPYNO, r.BID FROM BORROWS r JOIN DOCUMENTS d ON d.DOCID = r.DOCID WHERE RID = ?";
+        List<DocumentDetail> documents = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, rId); // Set the parameter before executing the query
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                documents.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving reservation count: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return documents;
     }
 }
