@@ -19,10 +19,16 @@ public class ListDocumentView extends JFrame {
         setSize(800, 400);
         setLayout(new BorderLayout());
 
+        // Label just above the document list
+        // Label for the document list
+        JLabel instructionLabel = new JLabel("Reservation will be cancelled after 6PM");
+        instructionLabel.setHorizontalAlignment(JLabel.CENTER);  // Center the label text
+
         // Panel for the list
         JPanel listPanel = new JPanel(new BorderLayout());
         documentList = new JList<>();
         JScrollPane scrollPane = new JScrollPane(documentList);
+        listPanel.add(instructionLabel, BorderLayout.NORTH); // Add label to the top
         listPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Panel for the button

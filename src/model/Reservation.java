@@ -3,15 +3,15 @@ package model;
 import java.util.Date;
 
 public class Reservation {
-    private int resNo;
+    private String resNo;
     private Date dTime;
 
-    public Reservation(int resNo, Date dTime) {
+    public Reservation(String resNo, Date dTime) {
         this.resNo = resNo;
         this.dTime = dTime;
     }
 
-    public int getResNo() {
+    public String getResNo() {
         return resNo;
     }
 

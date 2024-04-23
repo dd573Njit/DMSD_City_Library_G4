@@ -1,19 +1,21 @@
 package dao;
 
+import model.DocumentDetail;
 import model.Reservation;
 import model.Reserves;
 import util.DatabaseConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReserveDAO {
-    public int getReservationCountForAReader(String query) {
-        String sql = "SELECT COUNT(*) AS count FROM RESERVES WHERE RID = ?";
+    public int getReservationCount() {
+        String sql = "SELECT COUNT(*) AS count FROM RESERVATION;";
         int count = 0;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             pstmt.setString(1, "%" + query + "%");
              ResultSet rs = pstmt.executeQuery(); {
 
             if (rs.next()) {
@@ -32,7 +34,7 @@ public class ReserveDAO {
         String sql = "INSERT INTO RESERVATION (RES_NO, DTIME) VALUES (?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, reservation.getResNo());
+            pstmt.setString(1, reservation.getResNo());
             pstmt.setTimestamp(2, new Timestamp(reservation.getDTime().getTime()));
             pstmt.executeUpdate();
         }
@@ -43,11 +45,29 @@ public class ReserveDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, reserves.getRId());
-            pstmt.setInt(2, reserves.getReservationNo());
+            pstmt.setString(2, reserves.getReservationNo());
             pstmt.setString(3, reserves.getDocId());
             pstmt.setString(4, reserves.getCopyNo());
             pstmt.setString(5, reserves.getBId());
             pstmt.executeUpdate();
         }
     }
+
+    public List<DocumentDetail> getReservedDocId(String rId) throws SQLException {
+        String sql = "SELECT d.DOCID, d.TITLE, r.COPYNO, r.BID FROM RESERVES r JOIN DOCUMENTS d ON d.DOCID = r.DOCID WHERE RID = ?";
+        List<DocumentDetail> documents = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, rId); // Set the parameter before executing the query
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                documents.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving reservation count: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return documents;
+    }
+
 }

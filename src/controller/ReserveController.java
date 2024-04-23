@@ -36,17 +36,25 @@ public class ReserveController {
     }
 
     private void reserveDetail() {
-        ReserveDAO reserveDAO = new ReserveDAO();
-        String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
-        int resCount = reserveDAO.getReservationCountForAReader(rId);
-        if(resCount >= 10) {
-            MessageUtil.showErrorMessage("You already have 10 reserved docs", reserveView);
+//        if(CalendarUtil.isCurrentTimeAfter6Pm()) {
+//            MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", reserveView);
+//            return;
+//        }
+        if(documentDetail.size() > 10) {
+            MessageUtil.showErrorMessage("You cannot Reserve documents with more than 10 documents", reserveView);
             return;
         }
-        else {
-            //String resId = String.format("RES0%d", resCount);
-            int resId = resCount + 1;
-            try {
+
+        String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
+        ReserveDAO reserveDAO = new ReserveDAO();
+        if(areDocsReserved(reserveDAO, rId)) {
+            MessageUtil.showErrorMessage("You have already reserved this document", reserveView);
+            return;
+        }
+        int resCount = reserveDAO.getReservationCount();
+
+        String resId = String.format("RES0%d", resCount);
+        try {
                 Reservation reservation = new Reservation(resId, new Date());
                 reserveDAO.reserveNumberAndDate(reservation);
                 reserveDocDetail(reserveDAO,rId,resId);
@@ -54,9 +62,8 @@ public class ReserveController {
                 reserveDocDetail(reserveDAO,rId,resId);
             }
         }
-    }
 
-    private void reserveDocDetail(ReserveDAO reserveDAO, String rId, int resId) {
+    private void reserveDocDetail(ReserveDAO reserveDAO, String rId, String resId) {
         try {
             for (DocumentDetail documentDetail : documentDetail) {
                 String docId = documentDetail.getDocId();
@@ -64,10 +71,22 @@ public class ReserveController {
                 String bId = documentDetail.getBId();
                 Reserves reserves = new Reserves(rId, resId, docId, copyNo, bId);
                 reserveDAO.reserveReaderDetail(reserves);
-                MessageUtil.showSuccessMessage("Successfully Reserved", reserveView);
             }
+            MessageUtil.showSuccessMessage("Successfully Reserved", reserveView);
         } catch (SQLException ex) {
             MessageUtil.showErrorMessage("Document already Reserved", reserveView);
         }
+    }
+
+    private boolean areDocsReserved(ReserveDAO reserveDAO, String rId) {
+        try {
+            List<DocumentDetail> docs = reserveDAO.getReservedDocId(rId);
+            if(docs.getFirst().getDocId().equals(documentDetail.getFirst().getDocId())) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
     }
 }

@@ -2,12 +2,12 @@ package model;
 
 public class Reserves {
     private String rId;
-    private int reservationNo;
+    private String reservationNo;
     private String docId;
     private String copyNo;
     private String bId;
 
-    public Reserves(String rId, int reservationNo, String docId, String copyNo, String bId) {
+    public Reserves(String rId, String reservationNo, String docId, String copyNo, String bId) {
         this.rId = rId;
         this.reservationNo = reservationNo;
         this.docId = docId;
@@ -31,7 +31,7 @@ public class Reserves {
         return bId;
     }
 
-    public int getReservationNo() {
+    public String getReservationNo() {
         return reservationNo;
     }
 }

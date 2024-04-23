@@ -1,6 +1,7 @@
 package util;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -16,5 +17,11 @@ public class CalendarUtil {
     public static String getStringFormattedDate(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         return formatter.format(date);
+    }
+
+    public static boolean isCurrentTimeAfter6Pm() {
+        LocalTime currentTime = LocalTime.now();
+        LocalTime cutoffTime = LocalTime.of(18, 0);
+        return currentTime.isAfter(cutoffTime);
     }
 }
