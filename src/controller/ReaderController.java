@@ -58,10 +58,10 @@ public class ReaderController {
     }
 
     private void showReserveDocument() {
-//        if(CalendarUtil.isCurrentTimeAfter6Pm()) {
-//            MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", readerView);
-//            return;
-//        }
+        if(CalendarUtil.isCurrentTimeAfter6Pm()) {
+            MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", readerView);
+            return;
+        }
         List<DocumentDetail> documents = readerView.getSelectedDocuments();
         if(documents.isEmpty()) {
             MessageUtil.showErrorMessage("No Documents selected",readerView);

@@ -4,6 +4,7 @@ import dao.ReserveDAO;
 import model.DocumentDetail;
 import model.Reservation;
 import model.Reserves;
+import util.CalendarUtil;
 import util.MessageUtil;
 import util.SessionManager;
 import view.ReserveView;
@@ -36,10 +37,10 @@ public class ReserveController {
     }
 
     private void reserveDetail() {
-//        if(CalendarUtil.isCurrentTimeAfter6Pm()) {
-//            MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", reserveView);
-//            return;
-//        }
+        if(CalendarUtil.isCurrentTimeAfter6Pm()) {
+            MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", reserveView);
+            return;
+        }
         if(documentDetail.size() > 10) {
             MessageUtil.showErrorMessage("You cannot Reserve documents with more than 10 documents", reserveView);
             return;
