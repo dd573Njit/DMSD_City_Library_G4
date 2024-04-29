@@ -16,6 +16,7 @@ import java.util.List;
 public class ReserveController {
     private final ReserveView reserveView;
     private List<DocumentDetail> documentDetail;
+    private boolean docsReserved = false;
     public ReserveController() {
         reserveView = new ReserveView();
         attachHandlers();
@@ -23,6 +24,7 @@ public class ReserveController {
 
     public void showReserveView(List<DocumentDetail> documentDetail) {
         this.documentDetail = documentDetail;
+        docsReserved = false;
         reserveView.setVisible(true);
         reserveView.displayDocuments(documentDetail);
     }
@@ -48,13 +50,13 @@ public class ReserveController {
 
         String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
         ReserveDAO reserveDAO = new ReserveDAO();
-        if(areDocsReserved(reserveDAO, rId)) {
+        if(docsReserved) {
             MessageUtil.showErrorMessage("You have already reserved this document", reserveView);
             return;
         }
-        int resCount = reserveDAO.getReservationCount();
+        int resCount = reserveDAO.getReservationCount() + 1;
         String prefix = resCount > 9 ? "RES0" : "RES00";
-        String resId = String.format(prefix + "%d", resCount);
+        String resId = prefix + resCount;
         try {
                 Reservation reservation = new Reservation(resId, new Date());
                 reserveDAO.reserveNumberAndDate(reservation);
@@ -74,20 +76,9 @@ public class ReserveController {
                 reserveDAO.reserveReaderDetail(reserves);
             }
             MessageUtil.showSuccessMessage("Successfully Reserved", reserveView);
+            docsReserved = true;
         } catch (SQLException ex) {
             MessageUtil.showErrorMessage("Document already Reserved", reserveView);
         }
-    }
-
-    private boolean areDocsReserved(ReserveDAO reserveDAO, String rId) {
-        try {
-            List<DocumentDetail> docs = reserveDAO.getReservedDocId(rId);
-            if(docs.getFirst().getDocId().equals(documentDetail.getFirst().getDocId())) {
-                return true;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return false;
     }
 }

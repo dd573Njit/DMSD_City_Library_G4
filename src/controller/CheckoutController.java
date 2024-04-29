@@ -17,6 +17,7 @@ public class CheckoutController {
     private List<DocumentDetail> checkoutDocuments;
     private List<DocumentDetail> allDocuments;
     private boolean cannotCheckout = false;
+    private boolean docsBorrowed = false;
     public CheckoutController() {
         checkoutView = new CheckoutView();
         attachHandlers();
@@ -24,6 +25,7 @@ public class CheckoutController {
 
     public void showCheckoutView(List<DocumentDetail> documents) {
         checkoutView.setVisible(true);
+        docsBorrowed = false;
         this.checkoutDocuments = documents;
         getReservedDocs();
         if(cannotCheckout) {
@@ -48,13 +50,13 @@ public class CheckoutController {
         }
         CheckoutDAO checkoutDAO = new CheckoutDAO();
         String rId = SessionManager.getInstance().getCurrentReaderCardNumber().toUpperCase();
-        if(areDocsBorrowed(checkoutDAO, rId)) {
+        if(docsBorrowed) {
             MessageUtil.showErrorMessage("Documents already CheckedOut", checkoutView);
             return;
         }
-        int borCount = checkoutDAO.getBorrowingCount();
-        String prefix = borCount > 9 ? borCount + "BOR0" : "BOR00";
-        String borNo = String.format(prefix + "%d",borCount + 1).toUpperCase();
+        int borCount = checkoutDAO.getBorrowingCount() + 1;
+        String prefix = borCount > 9 ? "BOR0" : "BOR00";
+        String borNo = prefix + borCount;
         Date bDate = new Date();
         try {
                 Borrowing borrowing = new Borrowing(borNo, bDate, null);
@@ -70,27 +72,16 @@ public class CheckoutController {
             for (DocumentDetail documentDetail : allDocuments) {
                 String docId = documentDetail.getDocId().toUpperCase();
                 String copyNo = documentDetail.getCopyNo();
-                String bId = documentDetail.getBId();
-                Borrows borrows = new Borrows(borNo, docId, copyNo, bId, rId.toUpperCase());
+                String bId = documentDetail.getBId().toUpperCase();
+                Borrows borrows = new Borrows(borNo, docId, copyNo, bId, rId);
                 checkoutDAO.addBorrowsDetail(borrows);
-                MessageUtil.showSuccessMessage("Successfully CheckedOut", checkoutView);
             }
+            MessageUtil.showSuccessMessage("Successfully CheckedOut", checkoutView);
             removeReservedDoc();
+            docsBorrowed = true;
         } catch (SQLException ex) {
             MessageUtil.showErrorMessage("Document already CheckedOut", checkoutView);
         }
-    }
-
-    private boolean areDocsBorrowed(CheckoutDAO checkoutDAO, String rId) {
-        try {
-            List<DocumentDetail> docs = checkoutDAO.getBorrowedDocId(rId);
-            if(docs.getFirst().getDocId().equals(checkoutDocuments.getFirst().getDocId())) {
-                return true;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return false;
     }
 
     private void getReservedDocs() {

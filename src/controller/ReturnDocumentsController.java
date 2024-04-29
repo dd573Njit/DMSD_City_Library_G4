@@ -62,7 +62,8 @@ public class ReturnDocumentsController {
                 long days = getExtendedDays(returnDate);
                 borrowsDAO.returnBorrowedDocuments(rId, currentSqlDate, (days * lateFine));
             }
-            MessageUtil.showSuccessMessage("Returned documents successfully",returnDocumentsView);
+            MessageUtil.showSuccessMessage("Documents Returned successfully",returnDocumentsView);
+            borrowsDAO.removeBorrowedDocs(rId);
         }catch (Exception e) {
             MessageUtil.showErrorMessage(e.getMessage(), returnDocumentsView);
         }

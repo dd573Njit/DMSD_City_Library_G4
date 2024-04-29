@@ -15,6 +15,7 @@ public class ReaderController {
     private final ReaderView readerView;
     private final ReturnDocumentsController returnDocumentsController;
     private final DocumentDAO documentDAO;
+    private boolean docsSearched = true;
 
     public ReaderController() {
         readerView = new ReaderView();
@@ -35,7 +36,10 @@ public class ReaderController {
         readerView.getBtnListReservedDocuments().addActionListener(e -> openListDocument());
         readerView.getBtnLogout().addActionListener(e -> logoutHandler());
         readerView.getSearchText().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
-        readerView.getBtnSearch().addActionListener(e -> performSearch(readerView.getSearchText().getText()));
+        readerView.getBtnSearch().addActionListener(e -> {
+            performSearch(readerView.getSearchText().getText());
+            docsSearched = true;
+        });
         readerView.getBtnPrintDocuments().addActionListener(e -> showDocumentForPublisher());
     }
 
@@ -62,6 +66,10 @@ public class ReaderController {
             MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", readerView);
             return;
         }
+        if(!docsSearched) {
+            MessageUtil.showErrorMessage("Search for documents to be reserved",readerView);
+            return;
+        }
         List<DocumentDetail> documents = readerView.getSelectedDocuments();
         if(documents.isEmpty()) {
             MessageUtil.showErrorMessage("No Documents selected",readerView);
@@ -72,6 +80,10 @@ public class ReaderController {
 
     private void showCheckoutDocument() {
         List<DocumentDetail> documents = readerView.getSelectedDocuments();
+        if(!docsSearched) {
+            MessageUtil.showErrorMessage("Search for documents to be borrowed",readerView);
+            return;
+        }
         if(documents.isEmpty()) {
             MessageUtil.showErrorMessage("No Documents selected",readerView);
             return;
@@ -85,6 +97,7 @@ public class ReaderController {
         try {
             documents = documentDAO.getDocumentsForPublisher(pubName);
             readerView.displayDocuments(documents);
+            docsSearched = false;
         } catch (Exception e) {
             MessageUtil.showErrorMessage(e.getMessage(),readerView);
         }

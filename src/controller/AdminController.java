@@ -55,7 +55,7 @@ public class AdminController {
         try {
             int pub_id = Integer.parseInt(pubId);
             String prefix = pub_id > 9 ? "PUB0" : "PUB00";
-            pubId = String.format(prefix + "%d", pub_id);
+            pubId = prefix + pub_id;
             Publisher publisher = new Publisher(pubId, pubName, pubAddress);
             PublisherDAO publisherDAO = new PublisherDAO();
             publisherDAO.addPublisher(publisher);
@@ -74,7 +74,7 @@ public class AdminController {
         try {
             int doc_id = Integer.parseInt(docId);
             String prefix = doc_id > 9 ? "DOC0" : "DOC00";
-            docId = String.format(prefix + "%d", doc_id);
+            docId = prefix + doc_id;
             Document document = new Document(docId, docTitle, new Date(), pubId);
             DocumentDAO documentDAO = new DocumentDAO();
             documentDAO.addDocument(document);
@@ -114,7 +114,7 @@ public class AdminController {
         try {
             int r_id = Integer.parseInt(rId);
             String prefix = r_id > 9 ? "RID0" : "RID00";
-            rId = String.format(prefix + "%d", r_id);
+            rId = prefix + r_id;
             int rPhone = Integer.parseInt(adminView.getTxtRPhone());
             Reader reader = new Reader(rId, rName, rType, rAddress, rPhone);
             ReaderDAO readerDAO = new ReaderDAO();
