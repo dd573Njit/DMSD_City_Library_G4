@@ -53,8 +53,8 @@ public class ReserveController {
             return;
         }
         int resCount = reserveDAO.getReservationCount();
-
-        String resId = String.format("RES0%d", resCount);
+        String prefix = resCount > 9 ? "RES0" : "RES00";
+        String resId = String.format(prefix + "%d", resCount);
         try {
                 Reservation reservation = new Reservation(resId, new Date());
                 reserveDAO.reserveNumberAndDate(reservation);

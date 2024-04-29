@@ -49,60 +49,79 @@ public class AdminController {
     }
 
     private  void addPublisherDetail() {
-        String pubId = adminView.getTxtPubId();
+        String pubId = adminView.getTxtPubId().toUpperCase();
         String pubName = adminView.getTxtPubName();
         String pubAddress = adminView.getTxtPubAddress();
         try {
+            int pub_id = Integer.parseInt(pubId);
+            String prefix = pub_id > 9 ? "PUB0" : "PUB00";
+            pubId = String.format(prefix + "%d", pub_id);
             Publisher publisher = new Publisher(pubId, pubName, pubAddress);
             PublisherDAO publisherDAO = new PublisherDAO();
             publisherDAO.addPublisher(publisher);
             addDocDetail(pubId);
-        } catch (SQLException ex) {
+        } catch (NumberFormatException e) {
+            MessageUtil.showErrorMessage("Add publisher id in numeric format", adminView);
+        }
+        catch (SQLException ex) {
             addDocDetail(pubId);
         }
     }
 
     private void addDocDetail(String pubId) {
-        String docId = adminView.getTxtDocId();
+        String docId = adminView.getTxtDocId().toUpperCase();
         String docTitle = adminView.getTxtDocTitle();
         try {
+            int doc_id = Integer.parseInt(docId);
+            String prefix = doc_id > 9 ? "DOC0" : "DOC00";
+            docId = String.format(prefix + "%d", doc_id);
             Document document = new Document(docId, docTitle, new Date(), pubId);
             DocumentDAO documentDAO = new DocumentDAO();
             documentDAO.addDocument(document);
             addCopyDetail(docId);
-        } catch (SQLException ex) {
+        } catch (NumberFormatException e) {
+            MessageUtil.showErrorMessage("Add document id in numeric format", adminView);
+        }
+        catch (SQLException ex) {
             addCopyDetail(docId);
         }
     }
 
     private void addCopyDetail(String docId) {
         String copyNo = adminView.getTxtCopyNumber();
-        String bId = adminView.getSelectedBranchNumber();
+        String bId = adminView.getSelectedBranchNumber().toUpperCase();
         String position = adminView.getCopyPosition();
         try {
-            Copy copy = new Copy(docId, copyNo, bId, position);
+            int copy_no = Integer.parseInt(copyNo);
+            Copy copy = new Copy(docId, copy_no + "", bId, position);
             CopyDAO copyDAO = new CopyDAO();
             copyDAO.addCopy(copy);
             MessageUtil.showSuccessMessage("Successfully added",adminView);
-        } catch (SQLException ex) {
+        } catch (NumberFormatException e) {
+            MessageUtil.showErrorMessage("Add copy number in numeric format", adminView);
+        }
+        catch (SQLException ex) {
             MessageUtil.showErrorMessage("Same Copy number", adminView);
         }
     }
 
     private void addReaderDetail() {
-        String rId = adminView.getTxtRId();
+        String rId = adminView.getTxtRId().toUpperCase();
         String rName = adminView.getTxtRName();
         String rAddress = adminView.getTxtRAddress();
         String rType = adminView.getTxtRType();
 
         try {
+            int r_id = Integer.parseInt(rId);
+            String prefix = r_id > 9 ? "RID0" : "RID00";
+            rId = String.format(prefix + "%d", r_id);
             int rPhone = Integer.parseInt(adminView.getTxtRPhone());
             Reader reader = new Reader(rId, rName, rType, rAddress, rPhone);
             ReaderDAO readerDAO = new ReaderDAO();
             readerDAO.addReader(reader);
             MessageUtil.showSuccessMessage("Successfully added",adminView);
         } catch(NumberFormatException e) {
-            MessageUtil.showErrorMessage("Phone Number is not correct", adminView);
+            MessageUtil.showErrorMessage("Phone Number/Reader id is not in numeric format", adminView);
         } catch (SQLException ex) {
             MessageUtil.showErrorMessage("Reader already Exists", adminView);
         }

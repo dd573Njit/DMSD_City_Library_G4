@@ -47,14 +47,14 @@ public class CheckoutController {
             return;
         }
         CheckoutDAO checkoutDAO = new CheckoutDAO();
-        String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
+        String rId = SessionManager.getInstance().getCurrentReaderCardNumber().toUpperCase();
         if(areDocsBorrowed(checkoutDAO, rId)) {
             MessageUtil.showErrorMessage("Documents already CheckedOut", checkoutView);
             return;
         }
-        int resCount = checkoutDAO.getBorrowingCount();
-
-        String borNo = String.format("BOR%d",resCount + 1);
+        int borCount = checkoutDAO.getBorrowingCount();
+        String prefix = borCount > 9 ? borCount + "BOR0" : "BOR00";
+        String borNo = String.format(prefix + "%d",borCount + 1).toUpperCase();
         Date bDate = new Date();
         try {
                 Borrowing borrowing = new Borrowing(borNo, bDate, null);
@@ -68,7 +68,7 @@ public class CheckoutController {
     private void addCheckoutDetail(CheckoutDAO checkoutDAO, String rId, String borNo) {
         try {
             for (DocumentDetail documentDetail : allDocuments) {
-                String docId = documentDetail.getDocId();
+                String docId = documentDetail.getDocId().toUpperCase();
                 String copyNo = documentDetail.getCopyNo();
                 String bId = documentDetail.getBId();
                 Borrows borrows = new Borrows(borNo, docId, copyNo, bId, rId.toUpperCase());
@@ -96,7 +96,7 @@ public class CheckoutController {
     private void getReservedDocs() {
         try {
             ReserveDAO reserveDAO = new ReserveDAO();
-            String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
+            String rId = SessionManager.getInstance().getCurrentReaderCardNumber().toUpperCase();
             List<DocumentDetail> reservedDocs = reserveDAO.getReservedDocId(rId);
             if(reservedDocs.size() + checkoutDocuments.size() > 10) {
                 cannotCheckout = true;
@@ -115,7 +115,7 @@ public class CheckoutController {
     private void removeReservedDoc() {
         try {
             ReserveDAO reserveDAO = new ReserveDAO();
-            String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
+            String rId = SessionManager.getInstance().getCurrentReaderCardNumber().toUpperCase();
             reserveDAO.removeReservedDocs(rId);
         } catch (Exception e) {
             e.printStackTrace();

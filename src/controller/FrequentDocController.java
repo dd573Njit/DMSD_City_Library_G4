@@ -32,7 +32,7 @@ public class FrequentDocController {
         try {
             int n = Integer.parseInt(frequentDocView.getNumberField());
             List<Reader> readers = null;
-            String bId = frequentDocView.getSelectedBranchNumber();
+            String bId = frequentDocView.getSelectedBranchNumber().toUpperCase();
             if (bId.isEmpty())
                 readers = frequentDocDAO.getNFreqBorrowers(n);
             else
@@ -50,7 +50,7 @@ public class FrequentDocController {
 
             int n = Integer.parseInt(frequentDocView.getNumberField());
             List<DocumentDetail> docs = null;
-            String bId = frequentDocView.getSelectedBranchNumber();
+            String bId = frequentDocView.getSelectedBranchNumber().toUpperCase();
             if (bId.isEmpty())
                 docs = frequentDocDAO.getNFreqBorrowedDocuments(n);
             else

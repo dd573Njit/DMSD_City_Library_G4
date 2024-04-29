@@ -26,7 +26,7 @@ public class ListDocumentController {
 
     public void showListDocument() {
         listDocumentView.setVisible(true);
-        String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
+        String rId = SessionManager.getInstance().getCurrentReaderCardNumber().toUpperCase();
         try {
             List<DocumentDetail> documents = new DocumentDAO().getReservedDocuments(rId);
             listDocumentView.displayDocuments(documents);

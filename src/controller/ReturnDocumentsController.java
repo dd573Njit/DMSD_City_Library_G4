@@ -53,7 +53,7 @@ public class ReturnDocumentsController {
             return;
         }
         BorrowsDAO borrowsDAO = new BorrowsDAO();
-        String rId = SessionManager.getInstance().getCurrentReaderCardNumber();
+        String rId = SessionManager.getInstance().getCurrentReaderCardNumber().toUpperCase();
         Date currentDate = new Date();
         java.sql.Date currentSqlDate = new java.sql.Date(currentDate.getTime());
         try {

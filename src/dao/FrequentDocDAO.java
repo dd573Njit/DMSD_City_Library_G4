@@ -120,7 +120,7 @@ public class FrequentDocDAO {
                 "JOIN COPIES c ON c.DOCID = d.DOCID\n" +
                 "JOIN BORROWS b ON d.DOCID = b.DOCID\n" +
                 "JOIN BORROWING bg ON bg.BOR_NO = b.BOR_NO\n" +
-                "WHERE YEAR(bg.BDTIME) = ?\n" +
+                "WHERE YEAR(d.PDATE) = ?\n" +
                 "GROUP BY d.DOCID, d.TITLE, c.COPYNO, c.BID\n" +
                 "ORDER BY BorrowCount DESC\n" +
                 "LIMIT 10;";

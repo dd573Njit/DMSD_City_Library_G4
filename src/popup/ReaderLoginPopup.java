@@ -14,7 +14,7 @@ public class ReaderLoginPopup {
         int result = JOptionPane.showConfirmDialog(parentFrame, panel, "Reader Login", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
-            String cardNumber = txtCardNumber.getText().trim();
+            String cardNumber = txtCardNumber.getText().trim().toUpperCase();
             if (cardNumber.isEmpty()) {
                 JOptionPane.showMessageDialog(parentFrame, "Card number cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (readerDAO.isValidReader(cardNumber)) {
