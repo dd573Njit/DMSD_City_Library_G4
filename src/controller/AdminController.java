@@ -29,6 +29,7 @@ public class AdminController {
         adminView.getBtnAddReader().addActionListener(e -> adminView.showPanel("Reader Panel"));
         adminView.getBtnFreqQuery().addActionListener(e -> new FrequentDocController().showFrequentDocView());
         adminView.getBtnBranchInfo().addActionListener(e -> showBranchInfo());
+        adminView.getBtnSearchDoc().addActionListener(e -> new DocumentStatusController().showDocumentStatusView());
         adminView.getBtnAddCurrentDoc().addActionListener(e -> {
             if(adminView.areAllDocFieldsFilled()) {
                 addPublisherDetail();

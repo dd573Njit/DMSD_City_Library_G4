@@ -26,7 +26,7 @@ public class ReaderView extends JFrame {
 
     private void initializeUI() {
         setTitle("Reader Functions");
-        setSize(800, 500);
+        setSize(900, 400);
         setLayout(new BorderLayout());
 
         // Top panel with action buttons

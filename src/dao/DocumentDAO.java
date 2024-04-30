@@ -1,6 +1,7 @@
 package dao;
 import model.Document;
 import model.DocumentDetail;
+import model.DocumentStatus;
 import model.ReturnableDocument;
 import util.CalendarUtil;
 import util.DatabaseConnection;
@@ -130,6 +131,32 @@ public class DocumentDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     results.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during database query: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    public List<DocumentStatus> getDocumentStatuses(String query) throws SQLException {
+        List<DocumentStatus> results = new ArrayList<>();
+        String sql = "SELECT  d.DOCID, d.TITLE, c.COPYNO, r.DTIME, b.BDTIME, b.RDTIME \n" +
+                "FROM DOCUMENTS d\n" +
+                "JOIN COPIES c ON d.DOCID = c.DOCID \n" +
+                "JOIN RESERVES rs ON c.DOCID = rs.DOCID AND c.COPYNO = rs.COPYNO \n" +
+                "JOIN BORROWS bs ON c.DOCID = bs.DOCID AND c.COPYNO = bs.COPYNO \n" +
+                "JOIN RESERVATION r ON r.RES_NO = rs.RESERVATION_NO \n" +
+                "JOIN BORROWING b ON b.BOR_NO = bs.BOR_NO \n" +
+                "WHERE d.TITLE LIKE ? OR d.DOCID LIKE ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, query);
+            pstmt.setString(2, query);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    results.add(new DocumentStatus(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getDate("DTIME"), rs.getDate("BDTIME"), rs.getDate("RDTIME")));
                 }
             }
         } catch (SQLException e) {
