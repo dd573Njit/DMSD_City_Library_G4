@@ -58,16 +58,17 @@ public class DocumentDAO {
     }
 
 
-    public List<ReturnableDocument> getReturnableDocuments() {
+    public List<ReturnableDocument> getReturnableDocuments(String rId) {
         List<ReturnableDocument> results = new ArrayList<>();
-        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, bg.BDTIME from DOCUMENTS d " +
-                "JOIN COPIES c on d.DOCID = c.DOCID " +
-                "JOIN BORROWS b on d.DOCID = b.DOCID " +
-                "JOIN BORROWING bg on bg.BOR_NO = b.BOR_NO " +
-                "WHERE b.RID = ? AND bg.RDTIME IS null;";
+        String sql = "SELECT d.DOCID, d.TITLE, c.COPYNO, bg.BDTIME \n" +
+                "FROM DOCUMENTS d \n" +
+                "JOIN COPIES c ON d.DOCID = c.DOCID \n" +
+                "JOIN BORROWS b ON c.DOCID = b.DOCID AND c.COPYNO = b.COPYNO \n" +
+                "JOIN BORROWING bg ON bg.BOR_NO = b.BOR_NO \n" +
+                "WHERE b.RID = ? AND bg.RDTIME IS NULL;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, SessionManager.getInstance().getCurrentReaderCardNumber());
+            pstmt.setString(1, rId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Date date = rs.getDate("BDTIME");

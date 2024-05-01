@@ -63,7 +63,7 @@ public class ReturnDocumentsController {
                 borrowsDAO.returnBorrowedDocuments(rId, currentSqlDate, (days * lateFine));
             }
             MessageUtil.showSuccessMessage("Documents Returned successfully",returnDocumentsView);
-            borrowsDAO.removeBorrowedDocs(rId);
+            //borrowsDAO.removeBorrowedDocs(rId);
         }catch (Exception e) {
             MessageUtil.showErrorMessage(e.getMessage(), returnDocumentsView);
         }
@@ -71,7 +71,8 @@ public class ReturnDocumentsController {
 
     public void showReturnDocuments() {
         returnDocumentsView.setVisible(true);
-        List<ReturnableDocument> documents = new DocumentDAO().getReturnableDocuments();
+        String rId = SessionManager.getInstance().getCurrentReaderCardNumber().toUpperCase();
+        List<ReturnableDocument> documents = new DocumentDAO().getReturnableDocuments(rId);
         returnDocumentsView.displayDocuments(documents);
         computeFineForCurrentDate(documents);
     }

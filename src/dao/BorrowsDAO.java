@@ -26,16 +26,16 @@ public class BorrowsDAO {
         }
     }
 
-    public void removeBorrowedDocs(String rId) throws SQLException {
-        String sql = "DELETE FROM BORROWS WHERE RID = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, rId);
-            int affectedRows = pstmt.executeUpdate();
-            System.out.println("Deleted " + affectedRows + " rows.");
-        } catch (SQLException e) {
-            System.err.println("Error deleting borrowed documents: " + e.getMessage());
-            throw e;
-        }
-    }
+//    public void removeBorrowedDocs(String rId) throws SQLException {
+//        String sql = "DELETE FROM BORROWS WHERE RID = ?";
+//        try (Connection conn = DatabaseConnection.getConnection();
+//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+//            pstmt.setString(1, rId);
+//            int affectedRows = pstmt.executeUpdate();
+//            System.out.println("Deleted " + affectedRows + " rows.");
+//        } catch (SQLException e) {
+//            System.err.println("Error deleting borrowed documents: " + e.getMessage());
+//            throw e;
+//        }
+//    }
 }
