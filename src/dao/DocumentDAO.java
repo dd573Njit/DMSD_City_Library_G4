@@ -145,10 +145,10 @@ public class DocumentDAO {
         String sql = "SELECT  d.DOCID, d.TITLE, c.COPYNO, r.DTIME, b.BDTIME, b.RDTIME \n" +
                 "FROM DOCUMENTS d\n" +
                 "JOIN COPIES c ON d.DOCID = c.DOCID \n" +
-                "JOIN RESERVES rs ON c.DOCID = rs.DOCID AND c.COPYNO = rs.COPYNO \n" +
-                "JOIN BORROWS bs ON c.DOCID = bs.DOCID AND c.COPYNO = bs.COPYNO \n" +
-                "JOIN RESERVATION r ON r.RES_NO = rs.RESERVATION_NO \n" +
-                "JOIN BORROWING b ON b.BOR_NO = bs.BOR_NO \n" +
+                "LEFT JOIN RESERVES rs ON c.DOCID = rs.DOCID AND c.COPYNO = rs.COPYNO \n" +
+                "LEFT JOIN BORROWS bs ON c.DOCID = bs.DOCID AND c.COPYNO = bs.COPYNO \n" +
+                "LEFT JOIN RESERVATION r ON r.RES_NO = rs.RESERVATION_NO \n" +
+                "LEFT JOIN BORROWING b ON b.BOR_NO = bs.BOR_NO \n" +
                 "WHERE d.TITLE LIKE ? OR d.DOCID LIKE ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

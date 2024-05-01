@@ -39,10 +39,10 @@ public class ReserveController {
     }
 
     private void reserveDetail() {
-        if(CalendarUtil.isCurrentTimeAfter6Pm()) {
-            MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", reserveView);
-            return;
-        }
+//        if(CalendarUtil.isCurrentTimeAfter6Pm()) {
+//            MessageUtil.showErrorMessage("You cannot Reserve documents after 6 pm", reserveView);
+//            return;
+//        }
         if(documentDetail.size() > 10) {
             MessageUtil.showErrorMessage("You cannot Reserve documents with more than 10 documents", reserveView);
             return;
