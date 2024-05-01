@@ -63,7 +63,6 @@ public class ReserveDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, rId); // Set the parameter before executing the query
-            System.out.println(pstmt);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 documents.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));

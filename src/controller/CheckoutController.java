@@ -27,7 +27,6 @@ public class CheckoutController {
         checkoutView.setVisible(true);
         docsBorrowed = false;
         this.checkoutDocuments = documents;
-        System.out.println(checkoutDocuments);
         getReservedDocs();
         if(cannotCheckout) {
             MessageUtil.showErrorMessage("You cannot checkout more than 10 documents", checkoutView);

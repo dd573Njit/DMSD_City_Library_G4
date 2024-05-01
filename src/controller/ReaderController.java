@@ -76,6 +76,7 @@ public class ReaderController {
             return;
         }
         new ReserveController().showReserveView(documents);
+        readerView.clearDocumentList();
     }
 
     private void showCheckoutDocument() {
@@ -89,6 +90,7 @@ public class ReaderController {
             return;
         }
         new CheckoutController().showCheckoutView(documents);
+        readerView.clearDocumentList();
     }
 
     private void showDocumentForPublisher() {

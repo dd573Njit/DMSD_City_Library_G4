@@ -143,4 +143,9 @@ public class ReaderView extends JFrame {
             cbPublisherNames.addItem(publisher.getPubName());
         }
     }
+
+    public void clearDocumentList() {
+        DefaultListModel<DocumentDetail> model = (DefaultListModel<DocumentDetail>) documentList.getModel();
+        model.removeAllElements();
+    }
 }
