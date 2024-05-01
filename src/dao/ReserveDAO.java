@@ -54,11 +54,16 @@ public class ReserveDAO {
     }
 
     public List<DocumentDetail> getReservedDocId(String rId) throws SQLException {
-        String sql = "SELECT d.DOCID, d.TITLE, r.COPYNO, r.BID FROM RESERVES r JOIN DOCUMENTS d ON d.DOCID = r.DOCID WHERE RID = ?";
+        String sql = "SELECT d.DOCID, d.TITLE, r.COPYNO, r.BID \n" +
+                "FROM DOCUMENTS d \n" +
+                "JOIN COPIES c ON d.DOCID = c.DOCID \n" +
+                "JOIN RESERVES r ON c.DOCID = r.DOCID AND c.COPYNO = r.COPYNO \n" +
+                "WHERE r.RID = ?";
         List<DocumentDetail> documents = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, rId); // Set the parameter before executing the query
+            System.out.println(pstmt);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 documents.add(new DocumentDetail(rs.getString("DOCID"), rs.getString("TITLE"), rs.getString("COPYNO"), rs.getString("BID")));

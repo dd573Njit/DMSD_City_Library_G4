@@ -120,11 +120,11 @@ public class DocumentDAO {
 
     public List<DocumentDetail> getReservedDocuments(String rId) throws SQLException {
         List<DocumentDetail> results = new ArrayList<>();
-        String sql = "SELECT DISTINCT d.DOCID, d.TITLE, c.COPYNO, c.BID\n" +
-                "from DOCUMENTS d\n" +
-                "JOIN COPIES c ON c.DOCID = d.DOCID\n" +
-                "JOIN RESERVES r ON r.DOCID = c.DOCID\n" +
-                "WHERE r.RID = ?;";
+        String sql = "SELECT d.DOCID, d.TITLE, r.COPYNO, r.BID \n" +
+                "FROM DOCUMENTS d \n" +
+                "JOIN COPIES c ON d.DOCID = c.DOCID\n" +
+                "JOIN RESERVES r ON c.DOCID = r.DOCID AND c.COPYNO = r.COPYNO\n" +
+                "WHERE r.RID = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
