@@ -179,6 +179,7 @@ public class FrequentDocView extends JFrame {
     }
 
     public void populateBranchNumbers(List<String> branchNumbers) {
+        branchNumberComboBox.addItem("None");
         for (String number : branchNumbers) {
             branchNumberComboBox.addItem(number);
         }
